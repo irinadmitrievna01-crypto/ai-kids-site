@@ -1,0 +1,583 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.3">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="ru"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1">&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1">&lt;meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"&gt;</p>
+<p class="p1">&lt;title&gt;🤖 АИ-Академия 2.0&lt;/title&gt;</p>
+<p class="p1">&lt;link rel="stylesheet" href="styles.css"&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;div id="stars-display"&gt;⭐ &lt;span id="stars-count"&gt;0&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p1">&lt;button id="parent-btn" onclick="openParentModal()"&gt;👨‍👩‍👧 Родителям&lt;/button&gt;</p>
+<p class="p1">&lt;div class="confetti-container" id="confetti-container"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- ===================== ГЛАВНАЯ ===================== --&gt;</p>
+<p class="p1">&lt;div id="page-home" class="page active"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="home-hero"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="robot-emoji"&gt;🤖&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h1 class="home-title"&gt;АИ-Академия 2.0&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;p class="home-subtitle"&gt;Учимся искусственному интеллекту, языкам и программированию! Выбери направление:&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="age-cards"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="age-card age-card-4" onclick="goToPage('4')"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span class="age-number"&gt;4&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span class="age-label"&gt;года&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p class="age-desc"&gt;Игры, рисование и сказки!&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;ul class="age-features"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;🎤 Говори с роботом&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;🎨 Рисуй с эффектами&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;✨ Оживи рисунок&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;📖 Слушай сказки&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/ul&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="age-card age-card-7" onclick="goToPage('7')"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span class="age-number"&gt;7&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span class="age-label"&gt;лет&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p class="age-desc"&gt;Программируй и создавай ИИ!&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;ul class="age-features"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;🎮 Создай свою игру&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;🤖 Построй чат-бота&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;✨ Придумай промпты&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;🚀 Полноценные игры&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/ul&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="age-card age-card-lang" onclick="goToPage('lang')"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span class="age-number"&gt;🌍&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span class="age-label"&gt;Языки&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p class="age-desc"&gt;Английский и китайский!&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;ul class="age-features"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;🇬🇧 Английский&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;🇨🇳 Китайский (中文)&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;🗣️ Произношение&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;li&gt;🎯 Игры-слова&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/ul&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="progress-panel" style="max-width:600px; margin-top:8px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h3&gt;📊 Твой прогресс&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="progress-modules" id="home-progress-list"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- ===================== СТРАНИЦА 4 ГОДА ===================== --&gt;</p>
+<p class="p1">&lt;div id="page-4" class="page"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="page-header" style="width:100%; max-width:1000px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;button class="back-btn" onclick="goToPage('home')"&gt;← Назад&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h2 style="background:linear-gradient(90deg,#F97316,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>🎈 Для маленьких исследователей</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="modules-grid" style="max-width:1000px; width:100%;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Голосовой помощник --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card voice-module"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="module-header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h3&gt;🎤 Говорилка-роботилка&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;span class="tag" style="background:rgba(124,58,237,0.3); color:var(--violet-light);"&gt;Голос&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p style="color:var(--text-dim); font-size:0.9rem; margin-bottom:8px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>Нажми на микрофон и скажи что-нибудь! Робот ответит тебе!</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="mic-btn" id="mic-btn" onclick="toggleVoice()" title="Говори сюда!"&gt;🎤&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p id="mic-status" style="font-size:0.85rem; color:var(--text-dim);"&gt;Нажми, чтобы говорить&lt;/p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="voice-output" id="voice-output"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>👋 Привет! Я робот Бипик! Нажми на микрофон и поговори со мной!</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; justify-content:center;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-violet btn-sm" onclick="robotSay('Привет! Я так рад тебя слышать! 🤖')"&gt;Привет!&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-orange btn-sm" onclick="robotSay('Расскажи мне что-нибудь интересное! 🌟')"&gt;Расскажи!&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-teal btn-sm" onclick="speakRandom()"&gt;Случайное 🎲&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Улучшенная рисовалка --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card draw-module"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="module-header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h3&gt;🎨 Умная рисовалка&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;span class="tag" style="background:rgba(249,115,22,0.3); color:var(--orange);"&gt;ИИ-фильтры&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="color-picker-row" id="color-picker-row"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="brush-size-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;span style="font-size:0.8rem; color:var(--text-dim);"&gt;Кисть:&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="brush-dot active" style="width:12px;height:12px;" onclick="setBrushSize(4, this)" data-size="4"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="brush-dot" style="width:20px;height:20px;" onclick="setBrushSize(10, this)" data-size="10"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="brush-dot" style="width:28px;height:28px;" onclick="setBrushSize(20, this)" data-size="20"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="brush-dot" style="width:36px;height:36px;" onclick="setBrushSize(35, this)" data-size="35"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;canvas id="draw-canvas" width="600" height="300" style="margin-top:12px;"&gt;&lt;/canvas&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="filter-btns"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-violet btn-sm" onclick="applyFilter('rainbow')"&gt;🌈 Радуга&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-orange btn-sm" onclick="applyFilter('starry')"&gt;⭐ Звёзды&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-teal btn-sm" onclick="applyFilter('glow')"&gt;✨ Блеск&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-pink btn-sm" onclick="applyFilter('mirror')"&gt;🪞 Зеркало&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-blue btn-sm" onclick="applyFilter('pixel')"&gt;👾 Пиксели&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div style="display:flex; gap:8px; margin-top:10px; justify-content:center; flex-wrap:wrap;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-sm" style="background:rgba(255,255,255,0.1);" onclick="clearCanvas()"&gt;🗑️ Очистить&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-teal btn-sm" onclick="downloadCanvas()"&gt;💾 Сохранить&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-yellow btn-sm" onclick="awardStar('Рисунок')"&gt;⭐ Готово!&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Оживление рисунков --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card animate-module"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="module-header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h3&gt;✨ Оживи рисунок!&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;span class="tag" style="background:rgba(236,72,153,0.3); color:var(--pink);"&gt;AI-анимация&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p style="color:var(--text-dim); font-size:0.9rem; margin-bottom:8px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>Нарисуй персонажа и посмотри, как он оживёт!</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/p&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="animation-preview" id="animation-preview"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;span id="animated-sprite" style="font-size:4rem; transition: all 0.3s;"&gt;🐱&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="animate-controls"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-pink btn-sm" onclick="animateDrawing('dance')"&gt;💃 Танец&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-violet btn-sm" onclick="animateDrawing('jump')"&gt;⬆️ Прыжки&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-teal btn-sm" onclick="animateDrawing('walk')"&gt;🚶 Ходьба&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-orange btn-sm" onclick="animateDrawing('spin')"&gt;🔄 Круги&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-yellow btn-sm" onclick="animateDrawing('wiggle')"&gt;〰️ Виляние&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div style="margin-top:12px; padding:12px; background:rgba(0,0,0,0.2); border-radius:12px; font-size:0.85rem; color:var(--text-dim);"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>💡 &lt;strong&gt;Совет:&lt;/strong&gt; Нарисуй персонажа с головой, руками и ногами — так анимация будет лучше!</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="btn btn-pink" onclick="awardStar('Анимация')" style="margin-top:12px; width:100%;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>⭐ Мой персонаж ожил!</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Перетаскивание --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card drag-module"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="module-header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h3&gt;🧩 Кто где живёт?&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;span class="tag" style="background:rgba(13,148,136,0.3); color:var(--teal-light);"&gt;Игра&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p style="color:var(--text-dim); font-size:0.9rem; margin-bottom:8px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>Перетащи животных в правильные домики!</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/p&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="drag-area" id="drag-source"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="drag-item" draggable="true" data-animal="fish" data-home="water" id="drag-fish"&gt;🐟&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="drag-item" draggable="true" data-animal="bird" data-home="sky" id="drag-bird"&gt;🐦&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="drag-item" draggable="true" data-animal="bear" data-home="forest" id="drag-bear"&gt;🐻&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="drag-item" draggable="true" data-animal="frog" data-home="water" id="drag-frog"&gt;🐸&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="drop-zones"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="drop-zone" id="zone-water" data-zone="water"<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">             </span>ondragover="event.preventDefault(); this.classList.add('highlight')"</p>
+<p class="p1"><span class="Apple-converted-space">             </span>ondragleave="this.classList.remove('highlight')"</p>
+<p class="p1"><span class="Apple-converted-space">             </span>ondrop="handleDrop(event, 'water')"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>🌊&lt;span class="zone-label"&gt;Вода&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="drop-zone" id="zone-sky" data-zone="sky"</p>
+<p class="p1"><span class="Apple-converted-space">             </span>ondragover="event.preventDefault(); this.classList.add('highlight')"</p>
+<p class="p1"><span class="Apple-converted-space">             </span>ondragleave="this.classList.remove('highlight')"</p>
+<p class="p1"><span class="Apple-converted-space">             </span>ondrop="handleDrop(event, 'sky')"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>☁️&lt;span class="zone-label"&gt;Небо&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="drop-zone" id="zone-forest" data-zone="forest"</p>
+<p class="p1"><span class="Apple-converted-space">             </span>ondragover="event.preventDefault(); this.classList.add('highlight')"</p>
+<p class="p1"><span class="Apple-converted-space">             </span>ondragleave="this.classList.remove('highlight')"</p>
+<p class="p1"><span class="Apple-converted-space">             </span>ondrop="handleDrop(event, 'forest')"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>🌲&lt;span class="zone-label"&gt;Лес&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="drag-feedback" style="text-align:center; margin-top:12px; font-size:1rem; min-height:24px;"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="btn btn-orange btn-sm" style="margin-top:8px; width:100%;" onclick="resetDragGame()"&gt;🔄 Заново&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Сказки --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card story-module"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="module-header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h3&gt;📖 Сказочный ИИ&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;span class="tag" style="background:rgba(236,72,153,0.3); color:var(--pink);"&gt;Сказки&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p style="color:var(--text-dim); font-size:0.9rem; margin-bottom:8px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>Выбери героя и место — ИИ придумает сказку!</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/p&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;label style="font-size:0.82rem; color:var(--text-dim); display:block; margin-bottom:5px; font-weight:600;"&gt;Главный герой:&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;select id="story-hero" style="width:100%;background:rgba(0,0,0,0.3);border:2px solid rgba(255,255,255,0.1);border-radius:12px;padding:10px;color:var(--text);font-family:inherit;font-size:0.9rem;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="dragon"&gt;🐉 Дракончик&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="robot"&gt;🤖 Роботик&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="unicorn"&gt;🦄 Единорог&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="bunny"&gt;🐰 Зайчик&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="star"&gt;⭐ Звёздочка&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;label style="font-size:0.82rem; color:var(--text-dim); display:block; margin-bottom:5px; font-weight:600;"&gt;Место:&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;select id="story-place" style="width:100%;background:rgba(0,0,0,0.3);border:2px solid rgba(255,255,255,0.1);border-radius:12px;padding:10px;color:var(--text);font-family:inherit;font-size:0.9rem;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="forest"&gt;🌲 Волшебный лес&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="space"&gt;🚀 Космос&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="ocean"&gt;🌊 Подводный мир&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="castle"&gt;🏰 Замок&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="cloud"&gt;☁️ Облачный город&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="story-output" id="story-output"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>Нажми кнопку и я расскажу тебе сказку! ✨</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="story-controls"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-pink" onclick="generateStory()" style="flex:1; min-width:130px;"&gt;✨ Новая сказка!&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-teal btn-sm" onclick="readStoryAloud()" title="Послушать сказку"&gt;🔊 Читать&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-sm" style="background:rgba(255,255,255,0.1);" onclick="downloadStory()"&gt;💾&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- ===================== СТРАНИЦА 7 ЛЕТ ===================== --&gt;</p>
+<p class="p1">&lt;div id="page-7" class="page"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="page-header" style="width:100%; max-width:1100px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;button class="back-btn" onclick="goToPage('home')"&gt;← Назад&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h2 style="background:linear-gradient(90deg,#0D9488,#7C3AED);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>🚀 Лаборатория юного программиста</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="modules-grid" style="max-width:1100px; width:100%;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Улучшенный конструктор игр --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card game-builder" style="grid-column: 1 / -1;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="module-header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h3&gt;🎮 Конструктор игр PRO&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;span class="tag" style="background:rgba(124,58,237,0.3);color:var(--violet-light);"&gt;Блоки&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p style="color:var(--text-dim); font-size:0.88rem; margin-bottom:12px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>Создай полноценную игру! Перетащи блоки, настрой уровень и играй!</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/p&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="blocks-palette" id="blocks-palette"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="code-block event" draggable="true" data-block="when_click" onclick="addBlock('when_click')"&gt;▶ Нажали&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="code-block action" draggable="true" data-block="move_right" onclick="addBlock('move_right')"&gt;→ Вправо&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="code-block action" draggable="true" data-block="move_left" onclick="addBlock('move_left')"&gt;← Влево&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="code-block action" draggable="true" data-block="jump" onclick="addBlock('jump')"&gt;⬆ Прыжок&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="code-block action" draggable="true" data-block="move_up" onclick="addBlock('move_up')"&gt;⬆️ Вверх&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="code-block action" draggable="true" data-block="move_down" onclick="addBlock('move_down')"&gt;⬇️ Вниз&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="code-block control" draggable="true" data-block="repeat" onclick="addBlock('repeat')"&gt;🔁 Повторить&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="code-block control" draggable="true" data-block="if_coin" onclick="addBlock('if_coin')"&gt;💰 Если монета&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="code-block sound" draggable="true" data-block="play_sound" onclick="addBlock('play_sound')"&gt;🔊 Звук&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="code-block look" draggable="true" data-block="change_color" onclick="addBlock('change_color')"&gt;🎨 Цвет&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="code-block look" draggable="true" data-block="spin" onclick="addBlock('spin')"&gt;🔄 Крутить&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="code-block look" draggable="true" data-block="grow" onclick="addBlock('grow')"&gt;📏 Расти&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="code-canvas" id="code-canvas"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;p style="color:var(--text-dim); font-size:0.85rem; pointer-events:none;" id="canvas-placeholder"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>Нажми на блоки сверху, чтобы добавить их в программу ↑</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;!-- Игровой движок --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="game-canvas-container" id="game-container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="game-score"&gt;⭐ &lt;span id="game-score"&gt;0&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="game-player" id="game-player" style="left: 50px; top: 210px;"&gt;🐱&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="game-coin" id="coin1" style="left: 150px; top: 150px;"&gt;🪙&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="game-coin" id="coin2" style="left: 300px; top: 100px;"&gt;🪙&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="game-obstacle" style="left: 200px; top: 240px; width: 60px; height: 20px; background: #8B4513;"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="game-obstacle" style="left: 400px; top: 200px; width: 40px; height: 40px; background: #666;"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="game-controls"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-violet btn-sm" onclick="runGame()" style="flex:1;"&gt;▶ Запустить игру!&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-sm" style="background:rgba(255,255,255,0.1); flex:1;" onclick="clearBlocks()"&gt;🗑 Очистить код&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-teal btn-sm" style="flex:1;" onclick="resetGame()"&gt;🔄 Новая игра&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-yellow btn-sm" style="flex:1;" onclick="exportGame()"&gt;💾 Экспорт&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div style="margin-top:12px; padding:12px; background:rgba(0,0,0,0.2); border-radius:12px; font-size:0.85rem; color:var(--text-dim);"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>💡 &lt;strong&gt;Как играть:&lt;/strong&gt; Собери монеты 🪙, избегая препятствий! Используй блоки движения и прыжков.</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Чат-бот --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card chatbot-module"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="module-header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h3&gt;🤖 Сделай своего бота!&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;span class="tag" style="background:rgba(13,148,136,0.3);color:var(--teal-light);"&gt;Чат-бот&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="bot-config"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;label&gt;Имя бота:&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="text" id="bot-name" value="Бипик" maxlength="20" oninput="updateBotName()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="bot-config"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;label&gt;Добавь ответ на вопрос:&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;input type="text" id="bot-trigger" placeholder='Если спросят "привет"...'&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;input type="text" id="bot-response" placeholder='Ответить "Привет! 👋"'&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-teal btn-sm" onclick="addBotRule()" style="margin-top:8px;"&gt;+ Добавить правило&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="bot-rules" style="font-size:0.82rem; color:var(--text-dim); margin-bottom:8px; max-height:70px; overflow-y:auto;"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="chat-window" id="chat-window"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="chat-input-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="text" id="chat-input" placeholder="Напиши что-нибудь боту..." onkeydown="if(event.key==='Enter') sendChat()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-teal btn-sm" onclick="sendChat()"&gt;📨&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="btn btn-yellow btn-sm" onclick="awardStar('Чат-бот')" style="margin-top:8px; width:100%;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>⭐ Мой бот готов!</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Промпты --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card prompt-module"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="module-header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h3&gt;✨ Генератор промптов&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;span class="tag" style="background:rgba(249,115,22,0.3);color:var(--orange);"&gt;ИИ-текст&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p style="color:var(--text-dim); font-size:0.88rem; margin-bottom:12px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>Промпт — это задание для ИИ! Собери свой промпт:</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/p&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="prompt-options"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="prompt-select-group"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;label&gt;Кто? (герой)&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;select id="p-who"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="робот-исследователь"&gt;🤖 Робот-исследователь&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="добрый дракон"&gt;🐉 Добрый дракон&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="маленькая волшебница"&gt;🧙‍♀️ Волшебница&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="космонавт-кот"&gt;🐱 Кот-космонавт&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="подводная фея"&gt;🧜 Подводная фея&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="говорящий медвежонок"&gt;🐻 Медвежонок&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="prompt-select-group"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;label&gt;Где? (место)&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;select id="p-where"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="в радужном облаке"&gt;🌈 Радужное облако&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="на далёкой планете"&gt;🪐 Далёкая планета&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="в подводном дворце"&gt;🏰 Подводный дворец&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="в светящемся лесу"&gt;✨ Светящийся лес&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="на летающем острове"&gt;🏝 Летающий остров&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="в городе будущего"&gt;🌆 Город будущего&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="prompt-select-group"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;label&gt;Что делает?&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;select id="p-action"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="открывает тайную дверь"&gt;🚪 Открывает дверь&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="летит к звёздам"&gt;🌟 Летит к звёздам&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="делает магию"&gt;🪄 Делает магию&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="ищет сокровища"&gt;💎 Ищет сокровища&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="строит машину"&gt;⚙️ Строит машину&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="играет в игры"&gt;🎮 Играет&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="prompt-select-group"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;label&gt;Стиль картинки&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;select id="p-style"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="мультфильм Pixar"&gt;🎬 Мультик Pixar&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="акварельная иллюстрация"&gt;🖌 Акварель&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="детская книжная иллюстрация"&gt;📚 Книжка&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="яркое аниме"&gt;🇯🇵 Аниме&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="3D-рендер"&gt;💻 3D&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="рисунок карандашом"&gt;✏️ Карандаш&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button class="btn btn-orange" onclick="generatePrompt()" style="width:100%;"&gt;🎲 Создать промпт!&lt;/button&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="prompt-result" id="prompt-result"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>Нажми кнопку, чтобы придумать промпт для ИИ-картинки! ✨</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div style="display:flex; gap:8px; flex-wrap:wrap;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-sm" style="background:rgba(255,255,255,0.1); flex:1;" onclick="copyPrompt()"&gt;📋 Копировать&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-yellow btn-sm" style="flex:1;" onclick="awardStar('Промпт')"&gt;⭐ Отлично!&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Мини-проекты --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card projects-module"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="module-header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h3&gt;🚀 Мини-проекты&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;span class="tag" style="background:rgba(251,191,36,0.3);color:var(--yellow);"&gt;Пошагово&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p style="color:var(--text-dim); font-size:0.88rem; margin-bottom:4px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>Выбери проект и следуй пошаговым инструкциям!</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/p&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="projects-grid" id="projects-grid"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- ===================== СТРАНИЦА ЯЗЫКОВ ===================== --&gt;</p>
+<p class="p1">&lt;div id="page-lang" class="page"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="page-header" style="width:100%; max-width:1000px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;button class="back-btn" onclick="goToPage('home')"&gt;← Назад&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h2 style="background:linear-gradient(90deg,#3B82F6,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>🌍 Школа языков</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="modules-grid" style="max-width:1000px; width:100%;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Выбор языка --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card lang-module" style="grid-column: 1 / -1;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="module-header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h3&gt;📚 Выбери язык для изучения&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;span class="tag" style="background:rgba(59,130,246,0.3); color:var(--blue);"&gt;Языки&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="lang-tabs"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="lang-tab active" onclick="switchLang('en')"&gt;🇬🇧 English&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="lang-tab" onclick="switchLang('zh')"&gt;🇨🇳 中文&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;!-- Английский --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="lang-content active" id="lang-en"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="category-tabs"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="category-tab active" onclick="switchCategory('en', 'animals')"&gt;🐾 Животные&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="category-tab" onclick="switchCategory('en', 'colors')"&gt;🎨 Цвета&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="category-tab" onclick="switchCategory('en', 'numbers')"&gt;🔢 Числа&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="category-tab" onclick="switchCategory('en', 'food')"&gt;🍎 Еда&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="en-words-container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="word-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="word-foreign" id="en-word"&gt;Cat&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="word-transcription" id="en-transcription"&gt;/kæt/&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="word-translation" id="en-translation"&gt;Кошка&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="lang-controls"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button class="btn btn-blue btn-sm" onclick="speakWord('en')"&gt;🔊 Слушать&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button class="btn btn-violet btn-sm" onclick="nextWord('en')"&gt;➡️ Следующее&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button class="btn btn-yellow btn-sm" onclick="awardStar('Английский')"&gt;⭐ Знаю!&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div style="margin-top:16px; padding:16px; background:rgba(0,0,0,0.2); border-radius:12px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;h4 style="margin-bottom:12px;"&gt;🎮 Игра: Переведи слово!&lt;/h4&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div id="en-game" style="text-align:center;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="font-size:2rem; margin-bottom:12px;" id="en-game-word"&gt;Dog&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;" id="en-game-options"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button class="btn btn-sm" onclick="checkAnswer('en', 'Собака')"&gt;Собака&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button class="btn btn-sm" onclick="checkAnswer('en', 'Кошка')"&gt;Кошка&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button class="btn btn-sm" onclick="checkAnswer('en', 'Птица')"&gt;Птица&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="en-game-result" style="margin-top:12px; font-weight:700;"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;!-- Китайский --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="lang-content" id="lang-zh"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="category-tabs"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="category-tab active" onclick="switchCategory('zh', 'animals')"&gt;🐾 Животные&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="category-tab" onclick="switchCategory('zh', 'colors')"&gt;🎨 Цвета&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="category-tab" onclick="switchCategory('zh', 'numbers')"&gt;🔢 Числа&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="category-tab" onclick="switchCategory('zh', 'food')"&gt;🍎 Еда&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="zh-words-container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="word-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="word-foreign" id="zh-word" style="font-size:3rem;"&gt;猫&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="word-transcription" id="zh-transcription"&gt;māo&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="word-translation" id="zh-translation"&gt;Кошка&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="lang-controls"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button class="btn btn-red btn-sm" onclick="speakWord('zh')"&gt;🔊 Слушать&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button class="btn btn-violet btn-sm" onclick="nextWord('zh')"&gt;➡️ Следующее&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button class="btn btn-yellow btn-sm" onclick="awardStar('Китайский')"&gt;⭐ Знаю!&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div style="margin-top:16px; padding:16px; background:rgba(0,0,0,0.2); border-radius:12px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;h4 style="margin-bottom:12px;"&gt;🎮 Игра: Угадай иероглиф!&lt;/h4&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div id="zh-game" style="text-align:center;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="font-size:3rem; margin-bottom:12px;" id="zh-game-word"&gt;狗&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;" id="zh-game-options"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button class="btn btn-sm" onclick="checkAnswer('zh', 'Собака')"&gt;Собака&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button class="btn btn-sm" onclick="checkAnswer('zh', 'Кошка')"&gt;Кошка&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button class="btn btn-sm" onclick="checkAnswer('zh', 'Птица')"&gt;Птица&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="zh-game-result" style="margin-top:12px; font-weight:700;"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- ===================== МОДАЛКИ ===================== --&gt;</p>
+<p class="p1">&lt;div class="modal-overlay" id="parent-modal"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="modal-box"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h2&gt;👨‍👩‍👧 Режим помощи родителя&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="parent-modal-content"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p&gt;&lt;strong&gt;Добро пожаловать в АИ-Академию 2.0!&lt;/strong&gt;&lt;/p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p&gt;&lt;strong&gt;🎨 Рисовалка:&lt;/strong&gt; Использует HTML5 Canvas с улучшенной поддержкой touch-событий для мобильных устройств.&lt;/p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p&gt;&lt;strong&gt;✨ Анимация рисунков:&lt;/strong&gt; CSS-анимации имитируют AI-оживление персонажей (аналог Meta Animated Drawings).&lt;/p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p&gt;&lt;strong&gt;🌍 Языки:&lt;/strong&gt; Web Speech API для произношения английских и китайских слов.&lt;/p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p&gt;&lt;strong&gt;🎮 Программирование:&lt;/strong&gt; Полноценный игровой движок с физикой, коллизиями и сбором монет.&lt;/p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p style="background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);border-radius:12px;padding:12px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>💡 &lt;strong&gt;Совет:&lt;/strong&gt; Все данные сохраняются в localStorage браузера.</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;button class="btn btn-violet modal-close" onclick="closeParentModal()"&gt;✓ Понятно!&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;div class="modal-overlay" id="star-modal"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="modal-box" style="text-align:center; max-width:380px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div style="font-size:5rem; animation:star-pop 0.6s ease; display:block;"&gt;⭐&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h2 style="color:var(--yellow); margin:12px 0;"&gt;Ты получил звезду!&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;p id="star-modal-text" style="color:var(--text-dim);"&gt;&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="total-stars-display" style="font-size:1.5rem; font-weight:700; margin:16px 0; color:var(--star);"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;button class="btn btn-yellow modal-close" onclick="closeStarModal()"&gt;🎉 Ура!&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;script src="app.js"&gt;&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
