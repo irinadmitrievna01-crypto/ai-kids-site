@@ -5,13 +5,13 @@
 \paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f0\fs24 \cf0 // \uc0\u1040 \u1048 -\u1040 \u1050 \u1040 \u1044 \u1045 \u1052 \u1048 \u1071  2.0 - \u1055 \u1086 \u1083 \u1085 \u1099 \u1081  JavaScript\
+\f0\fs24 \cf0 // \uc0\u1040 \u1048 -\u1040 \u1050 \u1040 \u1044 \u1045 \u1052 \u1048 \u1071  2.0 - Vercel-\u1089 \u1086 \u1074 \u1084 \u1077 \u1089 \u1090 \u1080 \u1084 \u1072 \u1103  \u1074 \u1077 \u1088 \u1089 \u1080 \u1103 \
 \
 const STATE = \{\
-  stars: parseInt(localStorage.getItem('ai-kids-stars') || '0'),\
-  completedModules: JSON.parse(localStorage.getItem('ai-kids-modules') || '\{\}'),\
-  botName: localStorage.getItem('ai-kids-botname') || '\uc0\u1041 \u1080 \u1087 \u1080 \u1082 ',\
-  botRules: JSON.parse(localStorage.getItem('ai-kids-botrules') || '[]'),\
+  stars: 0,\
+  completedModules: \{\},\
+  botName: '\uc0\u1041 \u1080 \u1087 \u1080 \u1082 ',\
+  botRules: [],\
   currentStory: '',\
   currentPrompt: '',\
   dragCorrect: 0,\
@@ -20,19 +20,15 @@ const STATE = \{\
   recognition: null,\
   currentColor: '#FF4444',\
   brushSize: 4,\
-  isDrawing: false,\
-  lastX: 0,\
-  lastY: 0,\
   gameBlocks: [],\
   gameScore: 0,\
-  playerPos: \{ x: 50, y: 210 \},\
   currentLang: 'en',\
   currentCategory: 'animals',\
   wordIndices: \{ en: 0, zh: 0 \},\
   animationInterval: null\
 \};\
 \
-// \uc0\u1044 \u1072 \u1085 \u1085 \u1099 \u1077  \u1076 \u1083 \u1103  \u1103 \u1079 \u1099 \u1082 \u1086 \u1074 \
+// \uc0\u1044 \u1072 \u1085 \u1085 \u1099 \u1077 \
 const LANG_DATA = \{\
   en: \{\
     animals: [\
@@ -52,8 +48,7 @@ const LANG_DATA = \{\
       \{ word: 'One', transcription: '/w\uc0\u652 n/', translation: '\u1054 \u1076 \u1080 \u1085 ' \},\
       \{ word: 'Two', transcription: '/tu\uc0\u720 /', translation: '\u1044 \u1074 \u1072 ' \},\
       \{ word: 'Three', transcription: '/\uc0\u952 ri\u720 /', translation: '\u1058 \u1088 \u1080 ' \},\
-      \{ word: 'Four', transcription: '/f\uc0\u596 \u720 /', translation: '\u1063 \u1077 \u1090 \u1099 \u1088 \u1077 ' \},\
-      \{ word: 'Five', transcription: '/fa\uc0\u618 v/', translation: '\u1055 \u1103 \u1090 \u1100 ' \}\
+      \{ word: 'Four', transcription: '/f\uc0\u596 \u720 /', translation: '\u1063 \u1077 \u1090 \u1099 \u1088 \u1077 ' \}\
     ],\
     food: [\
       \{ word: 'Apple', transcription: '/\uc0\u712 \'e6pl/', translation: '\u1071 \u1073 \u1083 \u1086 \u1082 \u1086 ' \},\
@@ -80,8 +75,7 @@ const LANG_DATA = \{\
       \{ word: '\uc0\u19968 ', transcription: 'y\u299 ', translation: '\u1054 \u1076 \u1080 \u1085 ' \},\
       \{ word: '\uc0\u20108 ', transcription: '\'e8r', translation: '\u1044 \u1074 \u1072 ' \},\
       \{ word: '\uc0\u19977 ', transcription: 's\u257 n', translation: '\u1058 \u1088 \u1080 ' \},\
-      \{ word: '\uc0\u22235 ', transcription: 's\'ec', translation: '\u1063 \u1077 \u1090 \u1099 \u1088 \u1077 ' \},\
-      \{ word: '\uc0\u20116 ', transcription: 'w\u468 ', translation: '\u1055 \u1103 \u1090 \u1100 ' \}\
+      \{ word: '\uc0\u22235 ', transcription: 's\'ec', translation: '\u1063 \u1077 \u1090 \u1099 \u1088 \u1077 ' \}\
     ],\
     food: [\
       \{ word: '\uc0\u33529 \u26524 ', transcription: 'p\'edng gu\u466 ', translation: '\u1071 \u1073 \u1083 \u1086 \u1082 \u1086 ' \},\
@@ -98,147 +92,227 @@ const ROBOT_REPLIES = [\
   "\uc0\u1054 \u1090 \u1083 \u1080 \u1095 \u1085 \u1086  \u1089 \u1082 \u1072 \u1079 \u1072 \u1085 \u1086 ! \u1061 \u1086 \u1095 \u1077 \u1096 \u1100  \u1103  \u1088 \u1072 \u1089 \u1089 \u1082 \u1072 \u1078 \u1091  \u1090 \u1077 \u1073 \u1077  \u1095 \u1090 \u1086 -\u1085 \u1080 \u1073 \u1091 \u1076 \u1100  \u1086  \u1088 \u1086 \u1073 \u1086 \u1090 \u1072 \u1093 ? \u55358 \u56766 ",\
   "\uc0\u1052 \u1085 \u1077  \u1086 \u1095 \u1077 \u1085 \u1100  \u1085 \u1088 \u1072 \u1074 \u1080 \u1090 \u1089 \u1103  \u1089  \u1090 \u1086 \u1073 \u1086 \u1081  \u1088 \u1072 \u1079 \u1075 \u1086 \u1074 \u1072 \u1088 \u1080 \u1074 \u1072 \u1090 \u1100 ! \u55357 \u56476 ",\
   "\uc0\u1058 \u1099  \u1079 \u1085 \u1072 \u1077 \u1096 \u1100 , \u1103  \u1090 \u1086 \u1078 \u1077  \u1101 \u1090 \u1086  \u1083 \u1102 \u1073 \u1083 \u1102 ! \u1052 \u1099  \u1087 \u1086 \u1093 \u1086 \u1078 \u1080 ! \u11088 ",\
-  "\uc0\u1061 \u1072 -\u1093 \u1072 ! \u1058 \u1099  \u1084 \u1077 \u1085 \u1103  \u1088 \u1072 \u1089 \u1089 \u1084 \u1077 \u1096 \u1080 \u1083 ! \u1056 \u1086 \u1073 \u1086 \u1090 \u1099  \u1090 \u1086 \u1078 \u1077  \u1091 \u1084 \u1077 \u1102 \u1090  \u1089 \u1084 \u1077 \u1103 \u1090 \u1100 \u1089 \u1103 ! \u55357 \u56836 ",\
+  "\uc0\u1061 \u1072 -\u1093 \u1072 ! \u1058 \u1099  \u1084 \u1077 \u1085 \u1103  \u1088 \u1072 \u1089 \u1089 \u1084 \u1077 \u1096 \u1080 \u1083 ! \u55357 \u56836 ",\
   "\uc0\u1050 \u1072 \u1082 \u1086 \u1077  \u1091 \u1084 \u1085 \u1086 \u1077  \u1089 \u1083 \u1086 \u1074 \u1086 ! \u1058 \u1099  \u1085 \u1072 \u1089 \u1090 \u1086 \u1103 \u1097 \u1080 \u1081  \u1080 \u1089 \u1089 \u1083 \u1077 \u1076 \u1086 \u1074 \u1072 \u1090 \u1077 \u1083 \u1100 ! \u55357 \u56620 ",\
-  "\uc0\u1071  \u1079 \u1072 \u1087 \u1080 \u1089 \u1072 \u1083  \u1101 \u1090 \u1086  \u1074  \u1089 \u1074 \u1086 \u1102  \u1088 \u1086 \u1073 \u1086 \u1090 \u1086 \u1074 \u1091 \u1102  \u1087 \u1072 \u1084 \u1103 \u1090 \u1100 ! \u1057 \u1087 \u1072 \u1089 \u1080 \u1073 \u1086 ! \u55357 \u56510 ",\
-  "\uc0\u1041 \u1080 \u1087 -\u1073 \u1086 \u1087 ! \u1069 \u1090 \u1086  \u1084 \u1086 \u1105  \u1083 \u1102 \u1073 \u1080 \u1084 \u1086 \u1077 ! \u1041 \u1080 \u1087 -\u1073 \u1086 \u1087 ! \u55357 \u56596 ",\
-  "\uc0\u1058 \u1099  \u1079 \u1085 \u1072 \u1077 \u1096 \u1100 , \u1080 \u1089 \u1082 \u1091 \u1089 \u1089 \u1090 \u1074 \u1077 \u1085 \u1085 \u1099 \u1081  \u1080 \u1085 \u1090 \u1077 \u1083 \u1083 \u1077 \u1082 \u1090  \'97 \u1101 \u1090 \u1086  \u1082 \u1086 \u1075 \u1076 \u1072  \u1082 \u1086 \u1084 \u1087 \u1100 \u1102 \u1090 \u1077 \u1088  \u1091 \u1095 \u1080 \u1090 \u1089 \u1103 , \u1082 \u1072 \u1082  \u1090 \u1099 ! \u55358 \u56800 "\
+  "\uc0\u1071  \u1079 \u1072 \u1087 \u1080 \u1089 \u1072 \u1083  \u1101 \u1090 \u1086  \u1074  \u1089 \u1074 \u1086 \u1102  \u1088 \u1086 \u1073 \u1086 \u1090 \u1086 \u1074 \u1091 \u1102  \u1087 \u1072 \u1084 \u1103 \u1090 \u1100 ! \u55357 \u56510 "\
 ];\
 \
 const ROBOT_GREETINGS = \{\
   "\uc0\u1087 \u1088 \u1080 \u1074 \u1077 \u1090 ": "\u1055 \u1088 \u1080 \u1074 \u1077 \u1090 -\u1087 \u1088 \u1080 \u1074 \u1077 \u1090 ! \u1071  \u1090 \u1072 \u1082  \u1088 \u1072 \u1076  \u1090 \u1077 \u1073 \u1103  \u1089 \u1083 \u1099 \u1096 \u1072 \u1090 \u1100 ! \u55357 \u56395 \u55358 \u56598 ",\
   "\uc0\u1082 \u1072 \u1082  \u1076 \u1077 \u1083 \u1072 ": "\u1059  \u1084 \u1077 \u1085 \u1103  \u1074 \u1089 \u1105  \u1086 \u1090 \u1083 \u1080 \u1095 \u1085 \u1086 ! \u1058 \u1086 \u1083 \u1100 \u1082 \u1086  \u1095 \u1090 \u1086  \u1079 \u1072 \u1088 \u1103 \u1076 \u1080 \u1083  \u1073 \u1072 \u1090 \u1072 \u1088 \u1077 \u1081 \u1082 \u1080 ! \u9889 ",\
   "\uc0\u1082 \u1090 \u1086  \u1090 \u1099 ": "\u1071  \'97 \u1041 \u1080 \u1087 \u1080 \u1082 , \u1088 \u1086 \u1073 \u1086 \u1090 -\u1076 \u1088 \u1091 \u1075 ! \u1059 \u1095 \u1091  \u1076 \u1077 \u1090 \u1077 \u1081  \u1087 \u1088 \u1086  \u1048 \u1048 ! \u55358 \u56598 \u10024 ",\
-  "\uc0\u1095 \u1090 \u1086  \u1090 \u1072 \u1082 \u1086 \u1077  \u1080 \u1080 ": "\u1048 \u1048  \'97 \u1101 \u1090 \u1086  \u1082 \u1086 \u1075 \u1076 \u1072  \u1082 \u1086 \u1084 \u1087 \u1100 \u1102 \u1090 \u1077 \u1088  \u1076 \u1091 \u1084 \u1072 \u1077 \u1090  \u1080  \u1091 \u1095 \u1080 \u1090 \u1089 \u1103 ! \u1050 \u1072 \u1082  \u1091 \u1084 \u1085 \u1099 \u1081  \u1088 \u1086 \u1073 \u1086 \u1090 ! \u55358 \u56800 \u55357 \u56481 ",\
-  "\uc0\u1088 \u1072 \u1089 \u1089 \u1082 \u1072 \u1078 \u1080  \u1089 \u1082 \u1072 \u1079 \u1082 \u1091 ": "\u1051 \u1072 \u1076 \u1085 \u1086 ! \u1046 \u1080 \u1083 -\u1073 \u1099 \u1083  \u1084 \u1072 \u1083 \u1077 \u1085 \u1100 \u1082 \u1080 \u1081  \u1088 \u1086 \u1073 \u1086 \u1090 , \u1082 \u1086 \u1090 \u1086 \u1088 \u1099 \u1081  \u1084 \u1077 \u1095 \u1090 \u1072 \u1083  \u1089 \u1090 \u1072 \u1090 \u1100  \u1079 \u1074 \u1077 \u1079 \u1076 \u1086 \u1081 ! \u11088 \u55358 \u56598 ",\
-  "\uc0\u1087 \u1086 \u1082 \u1072 ": "\u1055 \u1086 \u1082 \u1072 -\u1087 \u1086 \u1082 \u1072 ! \u1042 \u1086 \u1079 \u1074 \u1088 \u1072 \u1097 \u1072 \u1081 \u1089 \u1103 , \u1084 \u1085 \u1077  \u1073 \u1091 \u1076 \u1077 \u1090  \u1089 \u1082 \u1091 \u1095 \u1085 \u1086 ! \u55357 \u56395 \u55357 \u56476 "\
+  "\uc0\u1095 \u1090 \u1086  \u1090 \u1072 \u1082 \u1086 \u1077  \u1080 \u1080 ": "\u1048 \u1048  \'97 \u1101 \u1090 \u1086  \u1082 \u1086 \u1075 \u1076 \u1072  \u1082 \u1086 \u1084 \u1087 \u1100 \u1102 \u1090 \u1077 \u1088  \u1076 \u1091 \u1084 \u1072 \u1077 \u1090  \u1080  \u1091 \u1095 \u1080 \u1090 \u1089 \u1103 ! \u55358 \u56800 \u55357 \u56481 ",\
+  "\uc0\u1088 \u1072 \u1089 \u1089 \u1082 \u1072 \u1078 \u1080  \u1089 \u1082 \u1072 \u1079 \u1082 \u1091 ": "\u1046 \u1080 \u1083 -\u1073 \u1099 \u1083  \u1084 \u1072 \u1083 \u1077 \u1085 \u1100 \u1082 \u1080 \u1081  \u1088 \u1086 \u1073 \u1086 \u1090 , \u1082 \u1086 \u1090 \u1086 \u1088 \u1099 \u1081  \u1084 \u1077 \u1095 \u1090 \u1072 \u1083  \u1089 \u1090 \u1072 \u1090 \u1100  \u1079 \u1074 \u1077 \u1079 \u1076 \u1086 \u1081 ! \u11088 ",\
+  "\uc0\u1087 \u1086 \u1082 \u1072 ": "\u1055 \u1086 \u1082 \u1072 -\u1087 \u1086 \u1082 \u1072 ! \u1042 \u1086 \u1079 \u1074 \u1088 \u1072 \u1097 \u1072 \u1081 \u1089 \u1103 , \u1084 \u1085 \u1077  \u1073 \u1091 \u1076 \u1077 \u1090  \u1089 \u1082 \u1091 \u1095 \u1085 \u1086 ! \u55357 \u56395 "\
 \};\
 \
 const COLORS = ['#FF4444','#FF8800','#FFD700','#00CC55','#0099FF','#8855FF','#FF55AA','#00DDDD','#FFFFFF','#222233'];\
 \
 const DRAG_DATA = \{\
-  fish:  \{ home: 'water', emoji: '\uc0\u55357 \u56351 ' \},\
-  bird:  \{ home: 'sky',   emoji: '\uc0\u55357 \u56358 ' \},\
-  bear:  \{ home: 'forest', emoji: '\uc0\u55357 \u56379 ' \},\
-  frog:  \{ home: 'water', emoji: '\uc0\u55357 \u56376 ' \}\
+  fish: \{ home: 'water', emoji: '\uc0\u55357 \u56351 ' \},\
+  bird: \{ home: 'sky', emoji: '\uc0\u55357 \u56358 ' \},\
+  bear: \{ home: 'forest', emoji: '\uc0\u55357 \u56379 ' \},\
+  frog: \{ home: 'water', emoji: '\uc0\u55357 \u56376 ' \}\
 \};\
 \
 const BLOCK_DEFS = \{\
-  when_click:   \{ label: '\uc0\u9654  \u1053 \u1072 \u1078 \u1072 \u1083 \u1080 ',  type: 'event',  action: (s) => \{ s.onclick_enabled = true; \} \},\
-  move_right:   \{ label: '\uc0\u8594  \u1042 \u1087 \u1088 \u1072 \u1074 \u1086 ',  type: 'action', action: (s) => \{ s.x = (s.x||50) + 30; \} \},\
-  move_left:    \{ label: '\uc0\u8592  \u1042 \u1083 \u1077 \u1074 \u1086 ',   type: 'action', action: (s) => \{ s.x = (s.x||50) - 30; \} \},\
-  jump:         \{ label: '\uc0\u11014  \u1055 \u1088 \u1099 \u1078 \u1086 \u1082 ', type: 'action', action: (s) => \{ s.jumping = true; \} \},\
-  move_up:      \{ label: '\uc0\u11014 \u65039  \u1042 \u1074 \u1077 \u1088 \u1093 ',  type: 'action', action: (s) => \{ s.y = (s.y||210) - 30; \} \},\
-  move_down:    \{ label: '\uc0\u11015 \u65039  \u1042 \u1085 \u1080 \u1079 ',   type: 'action', action: (s) => \{ s.y = (s.y||210) + 30; \} \},\
-  repeat:       \{ label: '\uc0\u55357 \u56577  \u1055 \u1086 \u1074 \u1090 \u1086 \u1088 \u1080 \u1090 \u1100 ', type: 'control', action: (s) => \{ s.repeat = true; \} \},\
-  if_coin:      \{ label: '\uc0\u55357 \u56496  \u1045 \u1089 \u1083 \u1080  \u1084 \u1086 \u1085 \u1077 \u1090 \u1072 ', type: 'control', action: (s) => \{ s.checkCoin = true; \} \},\
-  play_sound:   \{ label: '\uc0\u55357 \u56586  \u1047 \u1074 \u1091 \u1082 ',   type: 'sound',  action: (s) => \{ playClickSound(); \} \},\
-  change_color: \{ label: '\uc0\u55356 \u57256  \u1062 \u1074 \u1077 \u1090 ',   type: 'look',   action: (s) => \{ s.colorPhase = ((s.colorPhase||0) + 60) % 360; \} \},\
-  spin:         \{ label: '\uc0\u55357 \u56580  \u1050 \u1088 \u1091 \u1090 \u1080 \u1090 \u1100 ',type: 'look',   action: (s) => \{ s.rotation = ((s.rotation||0) + 90) % 360; \} \},\
-  grow:         \{ label: '\uc0\u55357 \u56527  \u1056 \u1072 \u1089 \u1090 \u1080 ',  type: 'event',  action: (s) => \{ s.scale = ((s.scale||1)) + 0.3; if(s.scale>2.5) s.scale = 1; \} \}\
+  when_click: \{ label: '\uc0\u9654  \u1053 \u1072 \u1078 \u1072 \u1083 \u1080 ', type: 'event' \},\
+  move_right: \{ label: '\uc0\u8594  \u1042 \u1087 \u1088 \u1072 \u1074 \u1086 ', type: 'action' \},\
+  move_left: \{ label: '\uc0\u8592  \u1042 \u1083 \u1077 \u1074 \u1086 ', type: 'action' \},\
+  jump: \{ label: '\uc0\u11014  \u1055 \u1088 \u1099 \u1078 \u1086 \u1082 ', type: 'action' \},\
+  move_up: \{ label: '\uc0\u11014 \u65039  \u1042 \u1074 \u1077 \u1088 \u1093 ', type: 'action' \},\
+  move_down: \{ label: '\uc0\u11015 \u65039  \u1042 \u1085 \u1080 \u1079 ', type: 'action' \},\
+  repeat: \{ label: '\uc0\u55357 \u56577  \u1055 \u1086 \u1074 \u1090 \u1086 \u1088 \u1080 \u1090 \u1100 ', type: 'control' \},\
+  if_coin: \{ label: '\uc0\u55357 \u56496  \u1045 \u1089 \u1083 \u1080  \u1084 \u1086 \u1085 \u1077 \u1090 \u1072 ', type: 'control' \},\
+  play_sound: \{ label: '\uc0\u55357 \u56586  \u1047 \u1074 \u1091 \u1082 ', type: 'sound' \},\
+  change_color: \{ label: '\uc0\u55356 \u57256  \u1062 \u1074 \u1077 \u1090 ', type: 'look' \},\
+  spin: \{ label: '\uc0\u55357 \u56580  \u1050 \u1088 \u1091 \u1090 \u1080 \u1090 \u1100 ', type: 'look' \},\
+  grow: \{ label: '\uc0\u55357 \u56527  \u1056 \u1072 \u1089 \u1090 \u1080 ', type: 'look' \}\
 \};\
 \
 const STORY_TEMPLATES = \{\
   dragon: \{ name: '\uc0\u1044 \u1088 \u1072 \u1082 \u1086 \u1085 \u1095 \u1080 \u1082  \u1048 \u1075 \u1085 \u1080 \u1089 ', trait: '\u1084 \u1072 \u1083 \u1077 \u1085 \u1100 \u1082 \u1080 \u1081 , \u1085 \u1086  \u1076 \u1086 \u1073 \u1088 \u1099 \u1081 ' \},\
-  robot:  \{ name: '\uc0\u1056 \u1086 \u1073 \u1086 \u1090 \u1080 \u1082  \u1041 \u1080 \u1087 \u1080 \u1082 ', trait: '\u1083 \u1102 \u1073 \u1086 \u1087 \u1099 \u1090 \u1085 \u1099 \u1081  \u1080  \u1091 \u1084 \u1085 \u1099 \u1081 ' \},\
-  unicorn:\{ name: '\uc0\u1045 \u1076 \u1080 \u1085 \u1086 \u1088 \u1086 \u1075  \u1056 \u1072 \u1076 \u1091 \u1075 \u1072 ', trait: '\u1076 \u1086 \u1073 \u1088 \u1099 \u1081  \u1080  \u1074 \u1086 \u1083 \u1096 \u1077 \u1073 \u1085 \u1099 \u1081 ' \},\
-  bunny:  \{ name: '\uc0\u1047 \u1072 \u1081 \u1095 \u1080 \u1082  \u1055 \u1091 \u1096 \u1086 \u1082 ', trait: '\u1073 \u1099 \u1089 \u1090 \u1088 \u1099 \u1081  \u1080  \u1089 \u1084 \u1077 \u1083 \u1099 \u1081 ' \},\
-  star:   \{ name: '\uc0\u1047 \u1074 \u1105 \u1079 \u1076 \u1086 \u1095 \u1082 \u1072  \u1052 \u1080 \u1084 \u1080 ', trait: '\u1103 \u1088 \u1082 \u1072 \u1103  \u1080  \u1074 \u1077 \u1089 \u1105 \u1083 \u1072 \u1103 ' \}\
+  robot: \{ name: '\uc0\u1056 \u1086 \u1073 \u1086 \u1090 \u1080 \u1082  \u1041 \u1080 \u1087 \u1080 \u1082 ', trait: '\u1083 \u1102 \u1073 \u1086 \u1087 \u1099 \u1090 \u1085 \u1099 \u1081  \u1080  \u1091 \u1084 \u1085 \u1099 \u1081 ' \},\
+  unicorn: \{ name: '\uc0\u1045 \u1076 \u1080 \u1085 \u1086 \u1088 \u1086 \u1075  \u1056 \u1072 \u1076 \u1091 \u1075 \u1072 ', trait: '\u1076 \u1086 \u1073 \u1088 \u1099 \u1081  \u1080  \u1074 \u1086 \u1083 \u1096 \u1077 \u1073 \u1085 \u1099 \u1081 ' \},\
+  bunny: \{ name: '\uc0\u1047 \u1072 \u1081 \u1095 \u1080 \u1082  \u1055 \u1091 \u1096 \u1086 \u1082 ', trait: '\u1073 \u1099 \u1089 \u1090 \u1088 \u1099 \u1081  \u1080  \u1089 \u1084 \u1077 \u1083 \u1099 \u1081 ' \},\
+  star: \{ name: '\uc0\u1047 \u1074 \u1105 \u1079 \u1076 \u1086 \u1095 \u1082 \u1072  \u1052 \u1080 \u1084 \u1080 ', trait: '\u1103 \u1088 \u1082 \u1072 \u1103  \u1080  \u1074 \u1077 \u1089 \u1105 \u1083 \u1072 \u1103 ' \}\
 \};\
 \
 const STORY_PLACES = \{\
   forest: \{ name: '\uc0\u1042 \u1086 \u1083 \u1096 \u1077 \u1073 \u1085 \u1086 \u1084  \u1083 \u1077 \u1089 \u1091 ', detail: '\u1075 \u1076 \u1077  \u1076 \u1077 \u1088 \u1077 \u1074 \u1100 \u1103  \u1089 \u1074 \u1077 \u1090 \u1080 \u1083 \u1080 \u1089 \u1100  \u1088 \u1072 \u1079 \u1085 \u1099 \u1084 \u1080  \u1094 \u1074 \u1077 \u1090 \u1072 \u1084 \u1080 ' \},\
-  space:  \{ name: '\uc0\u1050 \u1086 \u1089 \u1084 \u1086 \u1089 \u1077 ', detail: '\u1089 \u1088 \u1077 \u1076 \u1080  \u1076 \u1072 \u1083 \u1105 \u1082 \u1080 \u1093  \u1079 \u1074 \u1105 \u1079 \u1076  \u1080  \u1087 \u1083 \u1072 \u1085 \u1077 \u1090 ' \},\
-  ocean:  \{ name: '\uc0\u1055 \u1086 \u1076 \u1074 \u1086 \u1076 \u1085 \u1086 \u1084  \u1084 \u1080 \u1088 \u1077 ', detail: '\u1075 \u1076 \u1077  \u1088 \u1099 \u1073 \u1082 \u1080  \u1087 \u1077 \u1083 \u1080  \u1087 \u1077 \u1089 \u1085 \u1080 ' \},\
+  space: \{ name: '\uc0\u1050 \u1086 \u1089 \u1084 \u1086 \u1089 \u1077 ', detail: '\u1089 \u1088 \u1077 \u1076 \u1080  \u1076 \u1072 \u1083 \u1105 \u1082 \u1080 \u1093  \u1079 \u1074 \u1105 \u1079 \u1076  \u1080  \u1087 \u1083 \u1072 \u1085 \u1077 \u1090 ' \},\
+  ocean: \{ name: '\uc0\u1055 \u1086 \u1076 \u1074 \u1086 \u1076 \u1085 \u1086 \u1084  \u1084 \u1080 \u1088 \u1077 ', detail: '\u1075 \u1076 \u1077  \u1088 \u1099 \u1073 \u1082 \u1080  \u1087 \u1077 \u1083 \u1080  \u1087 \u1077 \u1089 \u1085 \u1080 ' \},\
   castle: \{ name: '\uc0\u1042 \u1086 \u1083 \u1096 \u1077 \u1073 \u1085 \u1086 \u1084  \u1079 \u1072 \u1084 \u1082 \u1077 ', detail: '\u1089  \u1073 \u1072 \u1096 \u1085 \u1103 \u1084 \u1080  \u1080 \u1079  \u1086 \u1073 \u1083 \u1072 \u1082 \u1086 \u1074 ' \},\
-  cloud:  \{ name: '\uc0\u1054 \u1073 \u1083 \u1072 \u1095 \u1085 \u1086 \u1084  \u1075 \u1086 \u1088 \u1086 \u1076 \u1077 ', detail: '\u1075 \u1076 \u1077  \u1084 \u1086 \u1078 \u1085 \u1086  \u1083 \u1077 \u1090 \u1072 \u1090 \u1100  \u1085 \u1072  \u1088 \u1072 \u1076 \u1091 \u1075 \u1077 ' \}\
+  cloud: \{ name: '\uc0\u1054 \u1073 \u1083 \u1072 \u1095 \u1085 \u1086 \u1084  \u1075 \u1086 \u1088 \u1086 \u1076 \u1077 ', detail: '\u1075 \u1076 \u1077  \u1084 \u1086 \u1078 \u1085 \u1086  \u1083 \u1077 \u1090 \u1072 \u1090 \u1100  \u1085 \u1072  \u1088 \u1072 \u1076 \u1091 \u1075 \u1077 ' \}\
 \};\
 \
-const STORY_ADVENTURES = [\
-  (hero, place) => `\uc0\u1054 \u1076 \u1085 \u1072 \u1078 \u1076 \u1099  $\{hero.name\} \'97 $\{hero.trait\} \'97 \u1086 \u1090 \u1087 \u1088 \u1072 \u1074 \u1080 \u1083 \u1089 \u1103  \u1074  $\{place.name\}, $\{place.detail\}. \u1058 \u1072 \u1084  \u1086 \u1085  \u1085 \u1072 \u1096 \u1105 \u1083  \u1079 \u1072 \u1075 \u1072 \u1076 \u1086 \u1095 \u1085 \u1091 \u1102  \u1096 \u1082 \u1072 \u1090 \u1091 \u1083 \u1082 \u1091 . \u1042 \u1085 \u1091 \u1090 \u1088 \u1080  \u1083 \u1077 \u1078 \u1072 \u1083 \u1086  \u1087 \u1080 \u1089 \u1100 \u1084 \u1086 : "\u1058 \u1086 \u1090 , \u1082 \u1090 \u1086  \u1076 \u1086 \u1073 \u1088 \u1077 \u1077  \u1074 \u1089 \u1077 \u1093 , \u1087 \u1086 \u1083 \u1091 \u1095 \u1080 \u1090  \u1074 \u1086 \u1083 \u1096 \u1077 \u1073 \u1085 \u1099 \u1081  \u1087 \u1086 \u1076 \u1072 \u1088 \u1086 \u1082 !" $\{hero.name\} \u1076 \u1091 \u1084 \u1072 \u1083 : "\u1050 \u1072 \u1082  \u1084 \u1085 \u1077  \u1089 \u1090 \u1072 \u1090 \u1100  \u1076 \u1086 \u1073 \u1088 \u1077 \u1077 ?" \u1048  \u1090 \u1086 \u1075 \u1076 \u1072  \u1086 \u1085  \u1091 \u1074 \u1080 \u1076 \u1077 \u1083  \u1084 \u1072 \u1083 \u1077 \u1085 \u1100 \u1082 \u1091 \u1102  \u1087 \u1090 \u1080 \u1095 \u1082 \u1091  \u1089  \u1073 \u1086 \u1083 \u1100 \u1085 \u1099 \u1084  \u1082 \u1088 \u1099 \u1083 \u1099 \u1096 \u1082 \u1086 \u1084 . \u1054 \u1085  \u1087 \u1086 \u1084 \u1086 \u1075  \u1077 \u1081 , \u1080  \u1074 \u1076 \u1088 \u1091 \u1075  \u1096 \u1082 \u1072 \u1090 \u1091 \u1083 \u1082 \u1072  \u1079 \u1072 \u1089 \u1074 \u1077 \u1090 \u1080 \u1083 \u1072 \u1089 \u1100 ! \u1042 \u1086 \u1083 \u1096 \u1077 \u1073 \u1085 \u1099 \u1081  \u1087 \u1086 \u1076 \u1072 \u1088 \u1086 \u1082  \u1086 \u1082 \u1072 \u1079 \u1072 \u1083 \u1089 \u1103  \u1085 \u1072 \u1089 \u1090 \u1086 \u1103 \u1097 \u1080 \u1084  \u1076 \u1088 \u1091 \u1075 \u1086 \u1084 ! \u1055 \u1090 \u1080 \u1095 \u1082 \u1072  \u1089 \u1090 \u1072 \u1083 \u1072  \u1077 \u1075 \u1086  \u1083 \u1091 \u1095 \u1096 \u1080 \u1084  \u1076 \u1088 \u1091 \u1075 \u1086 \u1084  \u1085 \u1072 \u1074 \u1089 \u1077 \u1075 \u1076 \u1072 . \u1050 \u1086 \u1085 \u1077 \u1094 ! \u55356 \u57119 `,\
-  (hero, place) => `\uc0\u1046 \u1080 \u1083 -\u1073 \u1099 \u1083  $\{hero.name\}. \u1054 \u1085  \u1073 \u1099 \u1083  $\{hero.trait\}. \u1050 \u1072 \u1078 \u1076 \u1099 \u1081  \u1076 \u1077 \u1085 \u1100  \u1086 \u1085  \u1093 \u1086 \u1076 \u1080 \u1083  \u1074  $\{place.name\}, $\{place.detail\}. \u1053 \u1086  \u1086 \u1076 \u1085 \u1072 \u1078 \u1076 \u1099  \u1074  $\{place.name\} \u1087 \u1088 \u1086 \u1087 \u1072 \u1083 \u1080  \u1074 \u1089 \u1077  \u1079 \u1074 \u1105 \u1079 \u1076 \u1099 ! \u1057 \u1090 \u1072 \u1083 \u1086  \u1086 \u1095 \u1077 \u1085 \u1100  \u1090 \u1077 \u1084 \u1085 \u1086 . $\{hero.name\} \u1085 \u1077  \u1080 \u1089 \u1087 \u1091 \u1075 \u1072 \u1083 \u1089 \u1103  \u1080  \u1087 \u1086 \u1096 \u1105 \u1083  \u1080 \u1089 \u1082 \u1072 \u1090 \u1100  \u1079 \u1074 \u1105 \u1079 \u1076 \u1099 . \u1054 \u1085  \u1085 \u1072 \u1096 \u1105 \u1083  \u1080 \u1093  \u1074  \u1090 \u1105 \u1084 \u1085 \u1086 \u1081  \u1087 \u1077 \u1097 \u1077 \u1088 \u1077  \'97 \u1086 \u1085 \u1080  \u1079 \u1072 \u1073 \u1083 \u1091 \u1076 \u1080 \u1083 \u1080 \u1089 \u1100 ! $\{hero.name\} \u1087 \u1086 \u1082 \u1072 \u1079 \u1072 \u1083  \u1080 \u1084  \u1076 \u1086 \u1088 \u1086 \u1075 \u1091  \u1076 \u1086 \u1084 \u1086 \u1081 . \u1047 \u1074 \u1105 \u1079 \u1076 \u1099  \u1090 \u1072 \u1082  \u1086 \u1073 \u1088 \u1072 \u1076 \u1086 \u1074 \u1072 \u1083 \u1080 \u1089 \u1100 , \u1095 \u1090 \u1086  \u1087 \u1086 \u1076 \u1072 \u1088 \u1080 \u1083 \u1080  \u1077 \u1084 \u1091  \u1089 \u1072 \u1084 \u1091 \u1102  \u1103 \u1088 \u1082 \u1091 \u1102  \u1080 \u1079  \u1085 \u1080 \u1093 . \u1057  \u1090 \u1077 \u1093  \u1087 \u1086 \u1088  $\{hero.name\} \u1085 \u1080 \u1082 \u1086 \u1075 \u1076 \u1072  \u1085 \u1077  \u1073 \u1086 \u1103 \u1083 \u1089 \u1103  \u1090 \u1077 \u1084 \u1085 \u1086 \u1090 \u1099 ! \u11088 `,\
-  (hero, place) => `\uc0\u1042  $\{place.name\}, $\{place.detail\}, \u1078 \u1080 \u1083  $\{hero.name\} \'97 $\{hero.trait\}. \u1054 \u1076 \u1085 \u1072 \u1078 \u1076 \u1099  \u1086 \u1085  \u1074 \u1089 \u1090 \u1088 \u1077 \u1090 \u1080 \u1083  \u1075 \u1088 \u1091 \u1089 \u1090 \u1085 \u1086 \u1075 \u1086  \u1086 \u1073 \u1083 \u1072 \u1082 \u1072 . "\u1055 \u1086 \u1095 \u1077 \u1084 \u1091  \u1090 \u1099  \u1075 \u1088 \u1091 \u1089 \u1090 \u1080 \u1096 \u1100 ?" \'97 \u1089 \u1087 \u1088 \u1086 \u1089 \u1080 \u1083  $\{hero.name\}. "\u1071  \u1085 \u1077  \u1091 \u1084 \u1077 \u1102  \u1076 \u1077 \u1083 \u1072 \u1090 \u1100  \u1088 \u1072 \u1076 \u1091 \u1075 \u1091 ," \'97 \u1086 \u1090 \u1074 \u1077 \u1090 \u1080 \u1083 \u1086  \u1086 \u1073 \u1083 \u1072 \u1082 \u1086 . \u1058 \u1086 \u1075 \u1076 \u1072  $\{hero.name\} \u1087 \u1088 \u1080 \u1076 \u1091 \u1084 \u1072 \u1083 : \u1085 \u1072 \u1076 \u1086  \u1087 \u1086 \u1084 \u1086 \u1075 \u1072 \u1090 \u1100  \u1086 \u1073 \u1083 \u1072 \u1082 \u1091  \u1082 \u1072 \u1078 \u1076 \u1099 \u1081  \u1076 \u1077 \u1085 \u1100 ! \u1054 \u1085 \u1080  \u1089 \u1090 \u1072 \u1083 \u1080  \u1090 \u1088 \u1077 \u1085 \u1080 \u1088 \u1086 \u1074 \u1072 \u1090 \u1100 \u1089 \u1103  \u1074 \u1084 \u1077 \u1089 \u1090 \u1077 . \u1048  \u1095 \u1077 \u1088 \u1077 \u1079  \u1085 \u1077 \u1076 \u1077 \u1083 \u1102  \u1086 \u1073 \u1083 \u1072 \u1082 \u1086  \u1089 \u1076 \u1077 \u1083 \u1072 \u1083 \u1086  \u1057 \u1040 \u1052 \u1059 \u1070  \u1041 \u1054 \u1051 \u1068 \u1064 \u1059 \u1070  \u1056 \u1040 \u1044 \u1059 \u1043 \u1059  \u1042  \u1052 \u1048 \u1056 \u1045 ! \u1042 \u1089 \u1077  \u1078 \u1080 \u1090 \u1077 \u1083 \u1080  $\{place.name\} \u1087 \u1088 \u1099 \u1075 \u1072 \u1083 \u1080  \u1086 \u1090  \u1088 \u1072 \u1076 \u1086 \u1089 \u1090 \u1080 . \u1040  $\{hero.name\} \u1087 \u1086 \u1085 \u1103 \u1083 : \u1077 \u1089 \u1083 \u1080  \u1089 \u1090 \u1072 \u1088 \u1072 \u1090 \u1100 \u1089 \u1103 , \u1074 \u1089 \u1105  \u1087 \u1086 \u1083 \u1091 \u1095 \u1080 \u1090 \u1089 \u1103 ! \u55356 \u57096 `\
-];\
-\
 const PROJECTS = [\
-  \{\
-    id: 'quiz',\
-    icon: '\uc0\u10067 ',\
-    title: '\uc0\u1057 \u1074 \u1086 \u1103  \u1074 \u1080 \u1082 \u1090 \u1086 \u1088 \u1080 \u1085 \u1072 ',\
-    desc: '\uc0\u1057 \u1086 \u1079 \u1076 \u1072 \u1081  \u1074 \u1086 \u1087 \u1088 \u1086 \u1089 \u1099  \u1076 \u1083 \u1103  \u1076 \u1088 \u1091 \u1079 \u1077 \u1081 !',\
-    stars: '\uc0\u11088 \u11088 ',\
-    difficulty: '\uc0\u1051 \u1077 \u1075 \u1082 \u1086 ',\
-    steps: [\
-      \{ title: '\uc0\u1055 \u1088 \u1080 \u1076 \u1091 \u1084 \u1072 \u1081  3 \u1074 \u1086 \u1087 \u1088 \u1086 \u1089 \u1072 ', text: '\u1053 \u1072 \u1087 \u1080 \u1096 \u1080  \u1085 \u1072  \u1073 \u1091 \u1084 \u1072 \u1075 \u1077  3 \u1074 \u1086 \u1087 \u1088 \u1086 \u1089 \u1072  \u1087 \u1088 \u1086  \u1078 \u1080 \u1074 \u1086 \u1090 \u1085 \u1099 \u1093 , \u1082 \u1086 \u1089 \u1084 \u1086 \u1089  \u1080 \u1083 \u1080  \u1095 \u1090 \u1086  \u1090 \u1077 \u1073 \u1077  \u1085 \u1088 \u1072 \u1074 \u1080 \u1090 \u1089 \u1103 .' \},\
-      \{ title: '\uc0\u1044 \u1086 \u1073 \u1072 \u1074 \u1100  \u1074 \u1072 \u1088 \u1080 \u1072 \u1085 \u1090 \u1099 ', text: '\u1050  \u1082 \u1072 \u1078 \u1076 \u1086 \u1084 \u1091  \u1074 \u1086 \u1087 \u1088 \u1086 \u1089 \u1091  \u1087 \u1088 \u1080 \u1076 \u1091 \u1084 \u1072 \u1081  3 \u1086 \u1090 \u1074 \u1077 \u1090 \u1072  \'97 \u1086 \u1076 \u1080 \u1085  \u1087 \u1088 \u1072 \u1074 \u1080 \u1083 \u1100 \u1085 \u1099 \u1081  \u1080  \u1076 \u1074 \u1072  \u1085 \u1077 \u1087 \u1088 \u1072 \u1074 \u1080 \u1083 \u1100 \u1085 \u1099 \u1093 .' \},\
-      \{ title: '\uc0\u1054 \u1090 \u1082 \u1088 \u1086 \u1081  \u1073 \u1083 \u1086 \u1082 \u1085 \u1086 \u1090 ', text: '\u1054 \u1090 \u1082 \u1088 \u1086 \u1081  "\u1041 \u1083 \u1086 \u1082 \u1085 \u1086 \u1090 " \u1085 \u1072  \u1082 \u1086 \u1084 \u1087 \u1100 \u1102 \u1090 \u1077 \u1088 \u1077  (\u1055 \u1091 \u1089 \u1082  \u8594  \u1041 \u1083 \u1086 \u1082 \u1085 \u1086 \u1090 ).' \},\
-      \{ title: '\uc0\u1053 \u1072 \u1087 \u1080 \u1096 \u1080  \u1087 \u1088 \u1086 \u1075 \u1088 \u1072 \u1084 \u1084 \u1091 ', text: '\u1042 \u1074 \u1077 \u1076 \u1080 : alert("\u1042 \u1086 \u1087 \u1088 \u1086 \u1089  1: \u1057 \u1082 \u1086 \u1083 \u1100 \u1082 \u1086  \u1085 \u1086 \u1075  \u1091  \u1087 \u1072 \u1091 \u1082 \u1072 ?"); \u1080  \u1089 \u1086 \u1093 \u1088 \u1072 \u1085 \u1080  \u1092 \u1072 \u1081 \u1083  \u1082 \u1072 \u1082  \u1074 \u1080 \u1082 \u1090 \u1086 \u1088 \u1080 \u1085 \u1072 .html' \},\
-      \{ title: '\uc0\u1047 \u1072 \u1087 \u1091 \u1089 \u1090 \u1080 !', text: '\u1054 \u1090 \u1082 \u1088 \u1086 \u1081  \u1092 \u1072 \u1081 \u1083  \u1074  \u1073 \u1088 \u1072 \u1091 \u1079 \u1077 \u1088 \u1077 ! \u1055 \u1086 \u1103 \u1074 \u1080 \u1090 \u1089 \u1103  \u1086 \u1082 \u1086 \u1096 \u1082 \u1086  \u1089  \u1090 \u1074 \u1086 \u1080 \u1084  \u1074 \u1086 \u1087 \u1088 \u1086 \u1089 \u1086 \u1084 !' \}\
-    ]\
-  \},\
-  \{\
-    id: 'story-ai',\
-    icon: '\uc0\u55357 \u56534 ',\
-    title: '\uc0\u1057 \u1082 \u1072 \u1079 \u1086 \u1095 \u1085 \u1099 \u1081  \u1048 \u1048 ',\
-    desc: '\uc0\u1053 \u1072 \u1091 \u1095 \u1080  \u1082 \u1086 \u1084 \u1087 \u1100 \u1102 \u1090 \u1077 \u1088  \u1088 \u1072 \u1089 \u1089 \u1082 \u1072 \u1079 \u1099 \u1074 \u1072 \u1090 \u1100  \u1089 \u1082 \u1072 \u1079 \u1082 \u1080 !',\
-    stars: '\uc0\u11088 \u11088 \u11088 ',\
-    difficulty: '\uc0\u1057 \u1088 \u1077 \u1076 \u1085 \u1077 ',\
-    steps: [\
-      \{ title: '\uc0\u1055 \u1086 \u1085 \u1103 \u1090 \u1100  \u1096 \u1072 \u1073 \u1083 \u1086 \u1085 ', text: '\u1048 \u1048  \u1089 \u1086 \u1079 \u1076 \u1072 \u1105 \u1090  \u1089 \u1082 \u1072 \u1079 \u1082 \u1080  \u1087 \u1086  \u1096 \u1072 \u1073 \u1083 \u1086 \u1085 \u1091 : \u1050 \u1058 \u1054  + \u1043 \u1044 \u1045  + \u1063 \u1058 \u1054  \u1057 \u1051 \u1059 \u1063 \u1048 \u1051 \u1054 \u1057 \u1068 .' \},\
-      \{ title: '\uc0\u1057 \u1086 \u1079 \u1076 \u1072 \u1081  \u1089 \u1087 \u1080 \u1089 \u1082 \u1080 ', text: '\u1053 \u1072 \u1087 \u1080 \u1096 \u1080  5 \u1075 \u1077 \u1088 \u1086 \u1077 \u1074 , 5 \u1084 \u1077 \u1089 \u1090  \u1080  5 \u1089 \u1086 \u1073 \u1099 \u1090 \u1080 \u1081 .' \},\
-      \{ title: '\uc0\u1055 \u1086 \u1087 \u1088 \u1086 \u1073 \u1091 \u1081  \u1089 \u1086 \u1095 \u1077 \u1090 \u1072 \u1085 \u1080 \u1103 ', text: '\u1042 \u1086 \u1079 \u1100 \u1084 \u1080  \u1089 \u1083 \u1091 \u1095 \u1072 \u1081 \u1085 \u1086 \u1077  \u1080 \u1079  \u1082 \u1072 \u1078 \u1076 \u1086 \u1075 \u1086  \u1089 \u1087 \u1080 \u1089 \u1082 \u1072 . \u1055 \u1086 \u1083 \u1091 \u1095 \u1080 \u1083 \u1072 \u1089 \u1100  \u1089 \u1082 \u1072 \u1079 \u1082 \u1072 ?' \},\
-      \{ title: '\uc0\u1050 \u1086 \u1076 \u1080 \u1088 \u1091 \u1081 !', text: '\u1048 \u1089 \u1087 \u1086 \u1083 \u1100 \u1079 \u1091 \u1081  \u1075 \u1077 \u1085 \u1077 \u1088 \u1072 \u1090 \u1086 \u1088  \u1089 \u1082 \u1072 \u1079 \u1086 \u1082  \u1085 \u1072  \u1101 \u1090 \u1086 \u1081  \u1089 \u1090 \u1088 \u1072 \u1085 \u1080 \u1094 \u1077 .' \},\
-      \{ title: '\uc0\u1055 \u1088 \u1080 \u1076 \u1091 \u1084 \u1072 \u1081  \u1089 \u1074 \u1086 \u1105 ', text: '\u1044 \u1086 \u1073 \u1072 \u1074 \u1100  \u1089 \u1074 \u1086 \u1080 \u1093  \u1075 \u1077 \u1088 \u1086 \u1077 \u1074  \u1095 \u1077 \u1088 \u1077 \u1079  \u1085 \u1072 \u1089 \u1090 \u1088 \u1086 \u1081 \u1082 \u1080 !' \}\
-    ]\
-  \},\
-  \{\
-    id: 'chatbot',\
-    icon: '\uc0\u55358 \u56598 ',\
-    title: '\uc0\u1059 \u1084 \u1085 \u1099 \u1081  \u1095 \u1072 \u1090 -\u1073 \u1086 \u1090 ',\
-    desc: '\uc0\u1054 \u1073 \u1091 \u1095 \u1080  \u1089 \u1074 \u1086 \u1077 \u1075 \u1086  \u1073 \u1086 \u1090 \u1072  \u1085 \u1086 \u1074 \u1099 \u1084  \u1092 \u1088 \u1072 \u1079 \u1072 \u1084 !',\
-    stars: '\uc0\u11088 \u11088 ',\
-    difficulty: '\uc0\u1051 \u1077 \u1075 \u1082 \u1086 ',\
-    steps: [\
-      \{ title: '\uc0\u1063 \u1090 \u1086  \u1090 \u1072 \u1082 \u1086 \u1077  \u1073 \u1086 \u1090 ?', text: '\u1063 \u1072 \u1090 -\u1073 \u1086 \u1090  \'97 \u1101 \u1090 \u1086  \u1087 \u1088 \u1086 \u1075 \u1088 \u1072 \u1084 \u1084 \u1072 , \u1082 \u1086 \u1090 \u1086 \u1088 \u1072 \u1103  \u1086 \u1090 \u1074 \u1077 \u1095 \u1072 \u1077 \u1090  \u1085 \u1072  \u1074 \u1086 \u1087 \u1088 \u1086 \u1089 \u1099 .' \},\
-      \{ title: '\uc0\u1044 \u1086 \u1073 \u1072 \u1074 \u1100  \u1087 \u1088 \u1072 \u1074 \u1080 \u1083 \u1072 ', text: '\u1042  \u1082 \u1086 \u1085 \u1089 \u1090 \u1088 \u1091 \u1082 \u1090 \u1086 \u1088 \u1077  \u1073 \u1086 \u1090 \u1072  \u1074 \u1074 \u1077 \u1076 \u1080  \u1089 \u1083 \u1086 \u1074 \u1086 -\u1090 \u1088 \u1080 \u1075 \u1075 \u1077 \u1088  \u1080  \u1086 \u1090 \u1074 \u1077 \u1090 .' \},\
-      \{ title: '\uc0\u1055 \u1088 \u1086 \u1074 \u1077 \u1088 \u1100  \u1073 \u1086 \u1090 \u1072 ', text: '\u1053 \u1072 \u1087 \u1080 \u1096 \u1080  \u1073 \u1086 \u1090 \u1091  \u1089 \u1074 \u1086 \u1105  \u1089 \u1083 \u1086 \u1074 \u1086 . \u1054 \u1090 \u1074 \u1077 \u1090 \u1080 \u1083  \u1083 \u1080  \u1086 \u1085  \u1087 \u1088 \u1072 \u1074 \u1080 \u1083 \u1100 \u1085 \u1086 ?' \},\
-      \{ title: '\uc0\u1059 \u1083 \u1091 \u1095 \u1096 \u1080  \u1073 \u1086 \u1090 \u1072 ', text: '\u1044 \u1086 \u1073 \u1072 \u1074 \u1100  \u1084 \u1080 \u1085 \u1080 \u1084 \u1091 \u1084  5 \u1087 \u1088 \u1072 \u1074 \u1080 \u1083 .' \},\
-      \{ title: '\uc0\u1055 \u1086 \u1093 \u1074 \u1072 \u1089 \u1090 \u1072 \u1081 \u1089 \u1103 !', text: '\u1055 \u1086 \u1082 \u1072 \u1078 \u1080  \u1089 \u1074 \u1086 \u1077 \u1075 \u1086  \u1073 \u1086 \u1090 \u1072  \u1088 \u1086 \u1076 \u1080 \u1090 \u1077 \u1083 \u1103 \u1084 !' \}\
-    ]\
-  \}\
+  \{ id: 'quiz', icon: '\uc0\u10067 ', title: '\u1057 \u1074 \u1086 \u1103  \u1074 \u1080 \u1082 \u1090 \u1086 \u1088 \u1080 \u1085 \u1072 ', desc: '\u1057 \u1086 \u1079 \u1076 \u1072 \u1081  \u1074 \u1086 \u1087 \u1088 \u1086 \u1089 \u1099  \u1076 \u1083 \u1103  \u1076 \u1088 \u1091 \u1079 \u1077 \u1081 !', stars: '\u11088 \u11088 ', difficulty: '\u1051 \u1077 \u1075 \u1082 \u1086 ' \},\
+  \{ id: 'story', icon: '\uc0\u55357 \u56534 ', title: '\u1057 \u1082 \u1072 \u1079 \u1086 \u1095 \u1085 \u1099 \u1081  \u1048 \u1048 ', desc: '\u1053 \u1072 \u1091 \u1095 \u1080  \u1082 \u1086 \u1084 \u1087 \u1100 \u1102 \u1090 \u1077 \u1088  \u1088 \u1072 \u1089 \u1089 \u1082 \u1072 \u1079 \u1099 \u1074 \u1072 \u1090 \u1100  \u1089 \u1082 \u1072 \u1079 \u1082 \u1080 !', stars: '\u11088 \u11088 \u11088 ', difficulty: '\u1057 \u1088 \u1077 \u1076 \u1085 \u1077 ' \},\
+  \{ id: 'chatbot', icon: '\uc0\u55358 \u56598 ', title: '\u1059 \u1084 \u1085 \u1099 \u1081  \u1095 \u1072 \u1090 -\u1073 \u1086 \u1090 ', desc: '\u1054 \u1073 \u1091 \u1095 \u1080  \u1089 \u1074 \u1086 \u1077 \u1075 \u1086  \u1073 \u1086 \u1090 \u1072  \u1085 \u1086 \u1074 \u1099 \u1084  \u1092 \u1088 \u1072 \u1079 \u1072 \u1084 !', stars: '\u11088 \u11088 ', difficulty: '\u1051 \u1077 \u1075 \u1082 \u1086 ' \}\
 ];\
 \
 // \uc0\u1048 \u1085 \u1080 \u1094 \u1080 \u1072 \u1083 \u1080 \u1079 \u1072 \u1094 \u1080 \u1103 \
 document.addEventListener('DOMContentLoaded', () => \{\
-  updateStarsDisplay();\
+  loadState();\
+  initEventListeners();\
   initCanvas();\
   initColorPicker();\
   initSpeechRecognition();\
-  initDragGame();\
-  initProjectsGrid();\
+  initDragAndDrop();\
+  initProjects();\
   initBotRules();\
+  initLanguages();\
+  updateStarsDisplay();\
   updateHomeProgress();\
-  initLanguageGames();\
 \});\
+\
+function loadState() \{\
+  try \{\
+    STATE.stars = parseInt(localStorage.getItem('ai-kids-stars') || '0');\
+    STATE.completedModules = JSON.parse(localStorage.getItem('ai-kids-modules') || '\{\}');\
+    STATE.botName = localStorage.getItem('ai-kids-botname') || '\uc0\u1041 \u1080 \u1087 \u1080 \u1082 ';\
+    STATE.botRules = JSON.parse(localStorage.getItem('ai-kids-botrules') || '[]');\
+  \} catch(e) \{\
+    console.log('LocalStorage not available');\
+  \}\
+\}\
+\
+function saveState() \{\
+  try \{\
+    localStorage.setItem('ai-kids-stars', STATE.stars);\
+    localStorage.setItem('ai-kids-modules', JSON.stringify(STATE.completedModules));\
+    localStorage.setItem('ai-kids-botname', STATE.botName);\
+    localStorage.setItem('ai-kids-botrules', JSON.stringify(STATE.botRules));\
+  \} catch(e) \{\
+    console.log('LocalStorage not available');\
+  \}\
+\}\
+\
+// Event Delegation\
+function initEventListeners() \{\
+  // \uc0\u1053 \u1072 \u1074 \u1080 \u1075 \u1072 \u1094 \u1080 \u1103 \
+  document.querySelectorAll('[data-page]').forEach(el => \{\
+    el.addEventListener('click', () => goToPage(el.dataset.page));\
+  \});\
+  \
+  document.querySelectorAll('[data-back]').forEach(el => \{\
+    el.addEventListener('click', () => goToPage(el.dataset.back));\
+  \});\
+  \
+  // \uc0\u1052 \u1086 \u1076 \u1072 \u1083 \u1082 \u1080 \
+  document.getElementById('parent-btn')?.addEventListener('click', openParentModal);\
+  document.getElementById('close-parent-modal')?.addEventListener('click', closeParentModal);\
+  document.getElementById('close-star-modal')?.addEventListener('click', closeStarModal);\
+  \
+  document.querySelectorAll('.modal-overlay').forEach(m => \{\
+    m.addEventListener('click', (e) => \{ if (e.target === m) m.classList.remove('open'); \});\
+  \});\
+  \
+  // \uc0\u1043 \u1086 \u1083 \u1086 \u1089 \u1086 \u1074 \u1086 \u1081  \u1087 \u1086 \u1084 \u1086 \u1097 \u1085 \u1080 \u1082 \
+  document.getElementById('mic-btn')?.addEventListener('click', toggleVoice);\
+  document.getElementById('speak-random')?.addEventListener('click', speakRandom);\
+  \
+  document.querySelectorAll('.robot-say').forEach(btn => \{\
+    btn.addEventListener('click', () => robotSay(btn.dataset.text));\
+  \});\
+  \
+  // \uc0\u1056 \u1080 \u1089 \u1086 \u1074 \u1072 \u1083 \u1082 \u1072 \
+  document.getElementById('clear-canvas')?.addEventListener('click', clearCanvas);\
+  document.getElementById('download-canvas')?.addEventListener('click', downloadCanvas);\
+  \
+  document.querySelectorAll('.filter-btn').forEach(btn => \{\
+    btn.addEventListener('click', () => applyFilter(btn.dataset.filter));\
+  \});\
+  \
+  document.querySelectorAll('.brush-dot').forEach(dot => \{\
+    dot.addEventListener('click', () => setBrushSize(parseInt(dot.dataset.size), dot));\
+  \});\
+  \
+  // \uc0\u1040 \u1085 \u1080 \u1084 \u1072 \u1094 \u1080 \u1103 \
+  document.querySelectorAll('.animate-btn').forEach(btn => \{\
+    btn.addEventListener('click', () => animateDrawing(btn.dataset.anim));\
+  \});\
+  \
+  // \uc0\u1055 \u1077 \u1088 \u1077 \u1090 \u1072 \u1089 \u1082 \u1080 \u1074 \u1072 \u1085 \u1080 \u1077 \
+  document.getElementById('reset-drag')?.addEventListener('click', resetDragGame);\
+  \
+  // \uc0\u1057 \u1082 \u1072 \u1079 \u1082 \u1080 \
+  document.getElementById('generate-story')?.addEventListener('click', generateStory);\
+  document.getElementById('read-story')?.addEventListener('click', readStoryAloud);\
+  document.getElementById('download-story')?.addEventListener('click', downloadStory);\
+  \
+  // \uc0\u1048 \u1075 \u1088 \u1099 \
+  document.getElementById('run-game')?.addEventListener('click', runGame);\
+  document.getElementById('clear-blocks')?.addEventListener('click', clearBlocks);\
+  document.getElementById('reset-game')?.addEventListener('click', resetGame);\
+  document.getElementById('export-game')?.addEventListener('click', exportGame);\
+  \
+  document.querySelectorAll('.code-block').forEach(block => \{\
+    block.addEventListener('click', () => addBlock(block.dataset.block));\
+  \});\
+  \
+  // \uc0\u1063 \u1072 \u1090 -\u1073 \u1086 \u1090 \
+  document.getElementById('add-bot-rule')?.addEventListener('click', addBotRule);\
+  document.getElementById('send-chat')?.addEventListener('click', sendChat);\
+  document.getElementById('bot-name')?.addEventListener('input', updateBotName);\
+  document.getElementById('chat-input')?.addEventListener('keypress', (e) => \{\
+    if (e.key === 'Enter') sendChat();\
+  \});\
+  \
+  // \uc0\u1055 \u1088 \u1086 \u1084 \u1087 \u1090 \u1099 \
+  document.getElementById('generate-prompt')?.addEventListener('click', generatePrompt);\
+  document.getElementById('copy-prompt')?.addEventListener('click', copyPrompt);\
+  \
+  // \uc0\u1071 \u1079 \u1099 \u1082 \u1080 \
+  document.querySelectorAll('.lang-tab').forEach(tab => \{\
+    tab.addEventListener('click', () => switchLang(tab.dataset.lang));\
+  \});\
+  \
+  document.querySelectorAll('.category-tab').forEach(tab => \{\
+    tab.addEventListener('click', () => switchCategory(tab.closest('.lang-content').id.split('-')[1], tab.dataset.cat));\
+  \});\
+  \
+  document.querySelectorAll('.speak-word').forEach(btn => \{\
+    btn.addEventListener('click', () => speakWord(btn.dataset.lang));\
+  \});\
+  \
+  document.querySelectorAll('.next-word').forEach(btn => \{\
+    btn.addEventListener('click', () => nextWord(btn.dataset.lang));\
+  \});\
+  \
+  // \uc0\u1047 \u1074 \u1105 \u1079 \u1076 \u1099 \
+  document.querySelectorAll('.award-star').forEach(btn => \{\
+    btn.addEventListener('click', () => awardStar(btn.dataset.module));\
+  \});\
+  \
+  // \uc0\u1050 \u1085 \u1086 \u1087 \u1082 \u1080  \u1089  \u1072 \u1085 \u1080 \u1084 \u1072 \u1094 \u1080 \u1077 \u1081 \
+  document.querySelectorAll('.btn').forEach(btn => \{\
+    btn.addEventListener('click', function() \{\
+      this.classList.remove('bounce-anim');\
+      void this.offsetWidth;\
+      this.classList.add('bounce-anim');\
+      setTimeout(() => this.classList.remove('bounce-anim'), 500);\
+    \});\
+  \});\
+\}\
 \
 // \uc0\u1053 \u1072 \u1074 \u1080 \u1075 \u1072 \u1094 \u1080 \u1103 \
 function goToPage(page) \{\
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));\
-  document.getElementById(`page-$\{page\}`).classList.add('active');\
-  window.scrollTo(0, 0);\
-  if (page === 'home') updateHomeProgress();\
+  const target = document.getElementById(`page-$\{page\}`);\
+  if (target) \{\
+    target.classList.add('active');\
+    window.scrollTo(0, 0);\
+    if (page === 'home') updateHomeProgress();\
+  \}\
 \}\
 \
-// \uc0\u1047 \u1074 \u1105 \u1079 \u1076 \u1099  \u1080  \u1087 \u1088 \u1086 \u1075 \u1088 \u1077 \u1089 \u1089 \
-function updateStarsDisplay() \{\
-  document.getElementById('stars-count').textContent = STATE.stars;\
-\}\
-\
+// \uc0\u1047 \u1074 \u1105 \u1079 \u1076 \u1099 \
 function awardStar(moduleName) \{\
   STATE.stars += 1;\
   STATE.completedModules[moduleName] = (STATE.completedModules[moduleName] || 0) + 1;\
-  localStorage.setItem('ai-kids-stars', STATE.stars);\
-  localStorage.setItem('ai-kids-modules', JSON.stringify(STATE.completedModules));\
+  saveState();\
   updateStarsDisplay();\
   showStarModal(moduleName);\
   playConfetti();\
@@ -246,24 +320,29 @@ function awardStar(moduleName) \{\
   updateHomeProgress();\
 \}\
 \
+function updateStarsDisplay() \{\
+  const el = document.getElementById('stars-count');\
+  if (el) el.textContent = STATE.stars;\
+\}\
+\
 function showStarModal(moduleName) \{\
-  document.getElementById('star-modal-text').textContent = \
-    `\uc0\u1047 \u1072 \u1076 \u1072 \u1085 \u1080 \u1077  "$\{moduleName\}" \u1074 \u1099 \u1087 \u1086 \u1083 \u1085 \u1077 \u1085 \u1086 ! \u1055 \u1088 \u1086 \u1076 \u1086 \u1083 \u1078 \u1072 \u1081  \u1074  \u1090 \u1086 \u1084  \u1078 \u1077  \u1076 \u1091 \u1093 \u1077 !`;\
-  document.getElementById('total-stars-display').textContent = \
-    `\uc0\u11088  \u1042 \u1089 \u1077 \u1075 \u1086  \u1079 \u1074 \u1105 \u1079 \u1076 : $\{STATE.stars\}`;\
-  document.getElementById('star-modal').classList.add('open');\
+  const text = document.getElementById('star-modal-text');\
+  const total = document.getElementById('total-stars-display');\
+  if (text) text.textContent = `\uc0\u1047 \u1072 \u1076 \u1072 \u1085 \u1080 \u1077  "$\{moduleName\}" \u1074 \u1099 \u1087 \u1086 \u1083 \u1085 \u1077 \u1085 \u1086 ! \u1055 \u1088 \u1086 \u1076 \u1086 \u1083 \u1078 \u1072 \u1081  \u1074  \u1090 \u1086 \u1084  \u1078 \u1077  \u1076 \u1091 \u1093 \u1077 !`;\
+  if (total) total.textContent = `\uc0\u11088  \u1042 \u1089 \u1077 \u1075 \u1086  \u1079 \u1074 \u1105 \u1079 \u1076 : $\{STATE.stars\}`;\
+  document.getElementById('star-modal')?.classList.add('open');\
 \}\
 \
 function closeStarModal() \{\
-  document.getElementById('star-modal').classList.remove('open');\
+  document.getElementById('star-modal')?.classList.remove('open');\
 \}\
-\
-const MODULES_LIST = ['\uc0\u1056 \u1080 \u1089 \u1091 \u1085 \u1086 \u1082 ', '\u1057 \u1082 \u1072 \u1079 \u1082 \u1072 ', '\u1055 \u1077 \u1088 \u1077 \u1090 \u1072 \u1089 \u1082 \u1080 \u1074 \u1072 \u1085 \u1080 \u1077 ', '\u1043 \u1086 \u1083 \u1086 \u1089 ', '\u1063 \u1072 \u1090 -\u1073 \u1086 \u1090 ', '\u1055 \u1088 \u1086 \u1084 \u1087 \u1090 ', '\u1055 \u1088 \u1086 \u1077 \u1082 \u1090 ', '\u1040 \u1085 \u1080 \u1084 \u1072 \u1094 \u1080 \u1103 ', '\u1040 \u1085 \u1075 \u1083 \u1080 \u1081 \u1089 \u1082 \u1080 \u1081 ', '\u1050 \u1080 \u1090 \u1072 \u1081 \u1089 \u1082 \u1080 \u1081 '];\
 \
 function updateHomeProgress() \{\
   const list = document.getElementById('home-progress-list');\
   if (!list) return;\
-  list.innerHTML = MODULES_LIST.map(m => \{\
+  \
+  const modules = ['\uc0\u1056 \u1080 \u1089 \u1091 \u1085 \u1086 \u1082 ', '\u1057 \u1082 \u1072 \u1079 \u1082 \u1072 ', '\u1055 \u1077 \u1088 \u1077 \u1090 \u1072 \u1089 \u1082 \u1080 \u1074 \u1072 \u1085 \u1080 \u1077 ', '\u1043 \u1086 \u1083 \u1086 \u1089 ', '\u1063 \u1072 \u1090 -\u1073 \u1086 \u1090 ', '\u1055 \u1088 \u1086 \u1084 \u1087 \u1090 ', '\u1055 \u1088 \u1086 \u1077 \u1082 \u1090 ', '\u1040 \u1085 \u1080 \u1084 \u1072 \u1094 \u1080 \u1103 ', '\u1040 \u1085 \u1075 \u1083 \u1080 \u1081 \u1089 \u1082 \u1080 \u1081 ', '\u1050 \u1080 \u1090 \u1072 \u1081 \u1089 \u1082 \u1080 \u1081 '];\
+  list.innerHTML = modules.map(m => \{\
     const done = STATE.completedModules[m] || 0;\
     const pct = Math.min(100, done * 33);\
     return `\
@@ -280,9 +359,11 @@ function updateHomeProgress() \{\
   \}).join('');\
 \}\
 \
-// \uc0\u1050 \u1086 \u1085 \u1092 \u1077 \u1090 \u1090 \u1080 \
+// \uc0\u1050 \u1086 \u1085 \u1092 \u1077 \u1090 \u1090 \u1080  \u1080  \u1079 \u1074 \u1091 \u1082 \u1080 \
 function playConfetti() \{\
   const container = document.getElementById('confetti-container');\
+  if (!container) return;\
+  \
   const colors = ['#7C3AED','#F97316','#0D9488','#EC4899','#FBBF24','#60A5FA'];\
   for (let i = 0; i < 50; i++) \{\
     const c = document.createElement('div');\
@@ -301,12 +382,10 @@ function playConfetti() \{\
   \}\
 \}\
 \
-// \uc0\u1047 \u1074 \u1091 \u1082 \u1080 \
 function playSuccessSound() \{\
   try \{\
     const ctx = new (window.AudioContext || window.webkitAudioContext)();\
-    const notes = [523, 659, 784, 1047];\
-    notes.forEach((freq, i) => \{\
+    [523, 659, 784, 1047].forEach((freq, i) => \{\
       const osc = ctx.createOscillator();\
       const gain = ctx.createGain();\
       osc.connect(gain);\
@@ -354,48 +433,46 @@ function playErrorSound() \{\
 \}\
 \
 // \uc0\u1052 \u1086 \u1076 \u1072 \u1083 \u1082 \u1080 \
-function openParentModal() \{ \
-  document.getElementById('parent-modal').classList.add('open'); \
+function openParentModal() \{\
+  document.getElementById('parent-modal')?.classList.add('open');\
 \}\
 \
-function closeParentModal() \{ \
-  document.getElementById('parent-modal').classList.remove('open'); \
+function closeParentModal() \{\
+  document.getElementById('parent-modal')?.classList.remove('open');\
 \}\
-\
-document.querySelectorAll('.modal-overlay').forEach(m => \{\
-  m.addEventListener('click', function(e) \{ \
-    if (e.target === this) this.classList.remove('open'); \
-  \});\
-\});\
 \
 // \uc0\u1043 \u1086 \u1083 \u1086 \u1089 \u1086 \u1074 \u1086 \u1081  \u1087 \u1086 \u1084 \u1086 \u1097 \u1085 \u1080 \u1082 \
 function initSpeechRecognition() \{\
-  if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) \{\
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;\
-    STATE.recognition = new SR();\
-    STATE.recognition.lang = 'ru-RU';\
-    STATE.recognition.continuous = false;\
-    STATE.recognition.interimResults = false;\
-    \
-    STATE.recognition.onresult = (event) => \{\
-      const said = event.results[0][0].transcript.toLowerCase().trim();\
-      document.getElementById('voice-output').innerHTML = `<strong>\uc0\u1058 \u1099  \u1089 \u1082 \u1072 \u1079 \u1072 \u1083 :</strong> "$\{said\}"<br><br>`;\
+  if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) return;\
+  \
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;\
+  STATE.recognition = new SR();\
+  STATE.recognition.lang = 'ru-RU';\
+  STATE.recognition.continuous = false;\
+  STATE.recognition.interimResults = false;\
+  \
+  STATE.recognition.onresult = (event) => \{\
+    const said = event.results[0][0].transcript.toLowerCase().trim();\
+    const output = document.getElementById('voice-output');\
+    if (output) \{\
+      output.innerHTML = `<strong>\uc0\u1058 \u1099  \u1089 \u1082 \u1072 \u1079 \u1072 \u1083 :</strong> "$\{said\}"<br><br>`;\
       processVoiceInput(said);\
-    \};\
-    \
-    STATE.recognition.onend = () => \{\
-      STATE.isRecording = false;\
-      document.getElementById('mic-btn').classList.remove('recording');\
-      document.getElementById('mic-status').textContent = '\uc0\u1053 \u1072 \u1078 \u1084 \u1080 , \u1095 \u1090 \u1086 \u1073 \u1099  \u1075 \u1086 \u1074 \u1086 \u1088 \u1080 \u1090 \u1100 ';\
-    \};\
-    \
-    STATE.recognition.onerror = () => \{\
-      STATE.isRecording = false;\
-      document.getElementById('mic-btn').classList.remove('recording');\
-      document.getElementById('voice-output').textContent = \
-        '\uc0\u1053 \u1077  \u1089 \u1084 \u1086 \u1075  \u1091 \u1089 \u1083 \u1099 \u1096 \u1072 \u1090 \u1100 ... \u1055 \u1086 \u1087 \u1088 \u1086 \u1073 \u1091 \u1081  \u1077 \u1097 \u1105  \u1088 \u1072 \u1079 ! \u55357 \u56386 ';\
-    \};\
-  \}\
+    \}\
+  \};\
+  \
+  STATE.recognition.onend = () => \{\
+    STATE.isRecording = false;\
+    document.getElementById('mic-btn')?.classList.remove('recording');\
+    const status = document.getElementById('mic-status');\
+    if (status) status.textContent = '\uc0\u1053 \u1072 \u1078 \u1084 \u1080 , \u1095 \u1090 \u1086 \u1073 \u1099  \u1075 \u1086 \u1074 \u1086 \u1088 \u1080 \u1090 \u1100 ';\
+  \};\
+  \
+  STATE.recognition.onerror = () => \{\
+    STATE.isRecording = false;\
+    document.getElementById('mic-btn')?.classList.remove('recording');\
+    const output = document.getElementById('voice-output');\
+    if (output) output.textContent = '\uc0\u1053 \u1077  \u1089 \u1084 \u1086 \u1075  \u1091 \u1089 \u1083 \u1099 \u1096 \u1072 \u1090 \u1100 ... \u1055 \u1086 \u1087 \u1088 \u1086 \u1073 \u1091 \u1081  \u1077 \u1097 \u1105  \u1088 \u1072 \u1079 ! \u55357 \u56386 ';\
+  \};\
 \}\
 \
 function toggleVoice() \{\
@@ -403,13 +480,15 @@ function toggleVoice() \{\
     robotSay('\uc0\u1043 \u1086 \u1083 \u1086 \u1089  \u1085 \u1077  \u1087 \u1086 \u1076 \u1076 \u1077 \u1088 \u1078 \u1080 \u1074 \u1072 \u1077 \u1090 \u1089 \u1103  \u1074  \u1101 \u1090 \u1086 \u1084  \u1073 \u1088 \u1072 \u1091 \u1079 \u1077 \u1088 \u1077 . \u1055 \u1086 \u1087 \u1088 \u1086 \u1073 \u1091 \u1081  Chrome! \u55356 \u57104 ');\
     return;\
   \}\
+  \
   if (STATE.isRecording) \{\
     STATE.recognition.stop();\
   \} else \{\
     STATE.recognition.start();\
     STATE.isRecording = true;\
-    document.getElementById('mic-btn').classList.add('recording');\
-    document.getElementById('mic-status').textContent = '\uc0\u1057 \u1083 \u1091 \u1096 \u1072 \u1102 ... \u55356 \u57252 ';\
+    document.getElementById('mic-btn')?.classList.add('recording');\
+    const status = document.getElementById('mic-status');\
+    if (status) status.textContent = '\uc0\u1057 \u1083 \u1091 \u1096 \u1072 \u1102 ... \u55356 \u57252 ';\
   \}\
   playClickSound();\
 \}\
@@ -419,11 +498,11 @@ function processVoiceInput(text) \{\
   for (const [key, val] of Object.entries(ROBOT_GREETINGS)) \{\
     if (text.includes(key)) \{ response = val; break; \}\
   \}\
-  if (!response) \{\
-    response = ROBOT_REPLIES[Math.floor(Math.random() * ROBOT_REPLIES.length)];\
-  \}\
-  const out = document.getElementById('voice-output');\
-  out.innerHTML += `<strong>\uc0\u55358 \u56598  \u1041 \u1080 \u1087 \u1080 \u1082 :</strong> $\{response\}`;\
+  if (!response) response = ROBOT_REPLIES[Math.floor(Math.random() * ROBOT_REPLIES.length)];\
+  \
+  const output = document.getElementById('voice-output');\
+  if (output) output.innerHTML += `<strong>\uc0\u55358 \u56598  \u1041 \u1080 \u1087 \u1080 \u1082 :</strong> $\{response\}`;\
+  \
   if ('speechSynthesis' in window) \{\
     const utt = new SpeechSynthesisUtterance(response.replace(/[^\\w\\s!?.,]/g, ''));\
     utt.lang = 'ru-RU';\
@@ -433,7 +512,9 @@ function processVoiceInput(text) \{\
 \}\
 \
 function robotSay(text) \{\
-  document.getElementById('voice-output').textContent = `\uc0\u55358 \u56598  \u1041 \u1080 \u1087 \u1080 \u1082 : $\{text\}`;\
+  const output = document.getElementById('voice-output');\
+  if (output) output.textContent = `\uc0\u55358 \u56598  \u1041 \u1080 \u1087 \u1080 \u1082 : $\{text\}`;\
+  \
   if ('speechSynthesis' in window) \{\
     const utt = new SpeechSynthesisUtterance(text.replace(/[^\\w\\s!?.,]/g, ''));\
     utt.lang = 'ru-RU';\
@@ -446,8 +527,7 @@ function speakRandom() \{\
   const phrases = [\
     "\uc0\u1058 \u1099  \u1079 \u1085 \u1072 \u1077 \u1096 \u1100 , \u1095 \u1090 \u1086  \u1088 \u1086 \u1073 \u1086 \u1090 \u1099  \u1089 \u1076 \u1077 \u1083 \u1072 \u1085 \u1099  \u1080 \u1079  \u1084 \u1077 \u1090 \u1072 \u1083 \u1083 \u1072  \u1080  \u1101 \u1083 \u1077 \u1082 \u1090 \u1088 \u1080 \u1095 \u1077 \u1089 \u1090 \u1074 \u1072 ? \u9889 ",\
     "\uc0\u1041 \u1080 \u1087 -\u1073 \u1086 \u1087 ! \u1057 \u1077 \u1075 \u1086 \u1076 \u1085 \u1103  \u1086 \u1090 \u1083 \u1080 \u1095 \u1085 \u1099 \u1081  \u1076 \u1077 \u1085 \u1100  \u1076 \u1083 \u1103  \u1080 \u1079 \u1091 \u1095 \u1077 \u1085 \u1080 \u1103  \u1048 \u1048 ! \u55358 \u56598 ",\
-    "\uc0\u1071  \u1076 \u1091 \u1084 \u1072 \u1102  \u1089 \u1086  \u1089 \u1082 \u1086 \u1088 \u1086 \u1089 \u1090 \u1100 \u1102  \u1084 \u1080 \u1083 \u1083 \u1080 \u1086 \u1085  \u1084 \u1099 \u1089 \u1083 \u1077 \u1081  \u1074  \u1089 \u1077 \u1082 \u1091 \u1085 \u1076 \u1091 ! \u55357 \u56493 ",\
-    "\uc0\u1048 \u1048  \u1087 \u1086 \u1084 \u1086 \u1075 \u1072 \u1077 \u1090  \u1074 \u1088 \u1072 \u1095 \u1072 \u1084 , \u1091 \u1095 \u1105 \u1085 \u1099 \u1084  \u1080  \u1076 \u1072 \u1078 \u1077  \u1093 \u1091 \u1076 \u1086 \u1078 \u1085 \u1080 \u1082 \u1072 \u1084 ! \u55356 \u57256 "\
+    "\uc0\u1071  \u1076 \u1091 \u1084 \u1072 \u1102  \u1089 \u1086  \u1089 \u1082 \u1086 \u1088 \u1086 \u1089 \u1090 \u1100 \u1102  \u1084 \u1080 \u1083 \u1083 \u1080 \u1086 \u1085  \u1084 \u1099 \u1089 \u1083 \u1077 \u1081  \u1074  \u1089 \u1077 \u1082 \u1091 \u1085 \u1076 \u1091 ! \u55357 \u56493 "\
   ];\
   robotSay(phrases[Math.floor(Math.random() * phrases.length)]);\
 \}\
@@ -455,16 +535,18 @@ function speakRandom() \{\
 // \uc0\u1056 \u1080 \u1089 \u1086 \u1074 \u1072 \u1083 \u1082 \u1072 \
 function initColorPicker() \{\
   const row = document.getElementById('color-picker-row');\
+  if (!row) return;\
+  \
   COLORS.forEach((c, i) => \{\
     const d = document.createElement('div');\
     d.className = 'color-dot' + (i === 0 ? ' active' : '');\
     d.style.background = c;\
-    d.onclick = () => \{\
+    d.addEventListener('click', () => \{\
       document.querySelectorAll('.color-dot').forEach(x => x.classList.remove('active'));\
       d.classList.add('active');\
       STATE.currentColor = c;\
       playClickSound();\
-    \};\
+    \});\
     row.appendChild(d);\
   \});\
 \}\
@@ -473,19 +555,17 @@ function initCanvas() \{\
   const canvas = document.getElementById('draw-canvas');\
   if (!canvas) return;\
   \
-  // \uc0\u1059 \u1089 \u1090 \u1072 \u1085 \u1086 \u1074 \u1082 \u1072  \u1088 \u1072 \u1079 \u1084 \u1077 \u1088 \u1072  canvas \u1087 \u1086 \u1076  \u1101 \u1082 \u1088 \u1072 \u1085 \
   const rect = canvas.getBoundingClientRect();\
-  canvas.width = rect.width;\
+  canvas.width = rect.width || 600;\
   canvas.height = 300;\
   \
   const ctx = canvas.getContext('2d');\
   ctx.fillStyle = '#FFFFFF';\
   ctx.fillRect(0, 0, canvas.width, canvas.height);\
-\
+  \
   let isDrawing = false;\
-  let lastX = 0;\
-  let lastY = 0;\
-\
+  let lastX = 0, lastY = 0;\
+  \
   function getPos(e) \{\
     const rect = canvas.getBoundingClientRect();\
     const scaleX = canvas.width / rect.width;\
@@ -502,7 +582,7 @@ function initCanvas() \{\
       y: (e.clientY - rect.top) * scaleY\
     \};\
   \}\
-\
+  \
   function startDraw(e) \{\
     e.preventDefault();\
     isDrawing = true;\
@@ -510,13 +590,12 @@ function initCanvas() \{\
     lastX = pos.x;\
     lastY = pos.y;\
     \
-    // \uc0\u1056 \u1080 \u1089 \u1091 \u1077 \u1084  \u1090 \u1086 \u1095 \u1082 \u1091  \u1087 \u1088 \u1080  \u1082 \u1072 \u1089 \u1072 \u1085 \u1080 \u1080 \
     ctx.beginPath();\
     ctx.arc(pos.x, pos.y, STATE.brushSize / 2, 0, Math.PI * 2);\
     ctx.fillStyle = STATE.currentColor;\
     ctx.fill();\
   \}\
-\
+  \
   function draw(e) \{\
     e.preventDefault();\
     if (!isDrawing) return;\
@@ -534,19 +613,16 @@ function initCanvas() \{\
     lastX = pos.x;\
     lastY = pos.y;\
   \}\
-\
+  \
   function endDraw(e) \{\
     e.preventDefault();\
     isDrawing = false;\
   \}\
-\
-  // \uc0\u1052 \u1099 \u1096 \u1100 \
+  \
   canvas.addEventListener('mousedown', startDraw);\
   canvas.addEventListener('mousemove', draw);\
   canvas.addEventListener('mouseup', endDraw);\
   canvas.addEventListener('mouseleave', endDraw);\
-  \
-  // Touch \uc0\u1089  passive: false \u1076 \u1083 \u1103  preventDefault\
   canvas.addEventListener('touchstart', startDraw, \{ passive: false \});\
   canvas.addEventListener('touchmove', draw, \{ passive: false \});\
   canvas.addEventListener('touchend', endDraw, \{ passive: false \});\
@@ -556,11 +632,12 @@ function initCanvas() \{\
 function setBrushSize(size, el) \{\
   STATE.brushSize = size;\
   document.querySelectorAll('.brush-dot').forEach(d => d.classList.remove('active'));\
-  el.classList.add('active');\
+  if (el) el.classList.add('active');\
 \}\
 \
 function clearCanvas() \{\
   const canvas = document.getElementById('draw-canvas');\
+  if (!canvas) return;\
   const ctx = canvas.getContext('2d');\
   ctx.fillStyle = '#FFFFFF';\
   ctx.fillRect(0, 0, canvas.width, canvas.height);\
@@ -569,6 +646,7 @@ function clearCanvas() \{\
 \
 function applyFilter(filter) \{\
   const canvas = document.getElementById('draw-canvas');\
+  if (!canvas) return;\
   const ctx = canvas.getContext('2d');\
   \
   if (filter === 'rainbow') \{\
@@ -603,7 +681,6 @@ function applyFilter(filter) \{\
     ctx.drawImage(canvas, -canvas.width, 0);\
     ctx.restore();\
   \} else if (filter === 'pixel') \{\
-    // Pixelate effect\
     const size = 10;\
     const w = canvas.width;\
     const h = canvas.height;\
@@ -640,6 +717,7 @@ function hslToRgb(h, s, l) \{\
 \
 function downloadCanvas() \{\
   const canvas = document.getElementById('draw-canvas');\
+  if (!canvas) return;\
   const link = document.createElement('a');\
   link.download = '\uc0\u1084 \u1086 \u1081 -\u1088 \u1080 \u1089 \u1091 \u1085 \u1086 \u1082 .png';\
   link.href = canvas.toDataURL();\
@@ -647,18 +725,18 @@ function downloadCanvas() \{\
   awardStar('\uc0\u1056 \u1080 \u1089 \u1091 \u1085 \u1086 \u1082 ');\
 \}\
 \
-// \uc0\u1040 \u1085 \u1080 \u1084 \u1072 \u1094 \u1080 \u1103  \u1088 \u1080 \u1089 \u1091 \u1085 \u1082 \u1086 \u1074 \
+// \uc0\u1040 \u1085 \u1080 \u1084 \u1072 \u1094 \u1080 \u1103 \
 function animateDrawing(type) \{\
   const sprite = document.getElementById('animated-sprite');\
+  if (!sprite) return;\
   \
-  // \uc0\u1054 \u1095 \u1080 \u1097 \u1072 \u1077 \u1084  \u1087 \u1088 \u1077 \u1076 \u1099 \u1076 \u1091 \u1097 \u1091 \u1102  \u1072 \u1085 \u1080 \u1084 \u1072 \u1094 \u1080 \u1102 \
   if (STATE.animationInterval) \{\
     clearInterval(STATE.animationInterval);\
     STATE.animationInterval = null;\
   \}\
   \
   sprite.style.animation = 'none';\
-  sprite.offsetHeight; // Trigger reflow\
+  sprite.offsetHeight;\
   \
   switch(type) \{\
     case 'dance':\
@@ -668,14 +746,12 @@ function animateDrawing(type) \{\
       sprite.style.animation = 'bounce 0.6s ease-in-out infinite';\
       break;\
     case 'walk':\
+      let walkPos = 0;\
       STATE.animationInterval = setInterval(() => \{\
-        const currentLeft = parseInt(sprite.style.marginLeft || 0);\
-        sprite.style.marginLeft = (currentLeft + 10) % 200 + 'px';\
-        sprite.style.transform = 'scaleX(1)';\
-        setTimeout(() => \{\
-          sprite.style.transform = 'scaleX(-1)';\
-        \}, 250);\
-      \}, 500);\
+        walkPos = (walkPos + 10) % 200;\
+        sprite.style.marginLeft = walkPos + 'px';\
+        sprite.style.transform = walkPos % 20 < 10 ? 'scaleX(1)' : 'scaleX(-1)';\
+      \}, 300);\
       break;\
     case 'spin':\
       sprite.style.animation = 'spin 1s linear infinite';\
@@ -687,7 +763,6 @@ function animateDrawing(type) \{\
   \
   playClickSound();\
   \
-  // \uc0\u1054 \u1089 \u1090 \u1072 \u1085 \u1072 \u1074 \u1083 \u1080 \u1074 \u1072 \u1077 \u1084  \u1072 \u1085 \u1080 \u1084 \u1072 \u1094 \u1080 \u1102  \u1095 \u1077 \u1088 \u1077 \u1079  5 \u1089 \u1077 \u1082 \u1091 \u1085 \u1076 \
   setTimeout(() => \{\
     if (STATE.animationInterval) \{\
       clearInterval(STATE.animationInterval);\
@@ -699,8 +774,8 @@ function animateDrawing(type) \{\
   \}, 5000);\
 \}\
 \
-// \uc0\u1055 \u1077 \u1088 \u1077 \u1090 \u1072 \u1089 \u1082 \u1080 \u1074 \u1072 \u1085 \u1080 \u1077 \
-function initDragGame() \{\
+// Drag and Drop\
+function initDragAndDrop() \{\
   const items = document.querySelectorAll('.drag-item');\
   items.forEach(item => \{\
     item.addEventListener('dragstart', e => \{\
@@ -708,32 +783,22 @@ function initDragGame() \{\
       item.classList.add('dragging');\
     \});\
     item.addEventListener('dragend', () => item.classList.remove('dragging'));\
-\
-    // Touch support\
-    let startX, startY, currentX, currentY;\
-    let isDragging = false;\
     \
+    // Touch\
+    let isDragging = false;\
     item.addEventListener('touchstart', e => \{\
-      const touch = e.touches[0];\
-      startX = touch.clientX;\
-      startY = touch.clientY;\
-      currentX = startX;\
-      currentY = startY;\
       isDragging = true;\
       item.style.opacity = '0.6';\
-      item.style.zIndex = '1000';\
     \}, \{ passive: true \});\
     \
     item.addEventListener('touchmove', e => \{\
       if (!isDragging) return;\
       e.preventDefault();\
       const touch = e.touches[0];\
-      currentX = touch.clientX;\
-      currentY = touch.clientY;\
-      \
       item.style.position = 'fixed';\
-      item.style.left = (currentX - 25) + 'px';\
-      item.style.top = (currentY - 25) + 'px';\
+      item.style.left = (touch.clientX - 25) + 'px';\
+      item.style.top = (touch.clientY - 25) + 'px';\
+      item.style.zIndex = '1000';\
     \}, \{ passive: false \});\
     \
     item.addEventListener('touchend', e => \{\
@@ -747,52 +812,63 @@ function initDragGame() \{\
       const touch = e.changedTouches[0];\
       const elem = document.elementFromPoint(touch.clientX, touch.clientY);\
       const zone = elem?.closest('.drop-zone');\
-      if (zone) \{\
-        handleDrop(null, zone.dataset.zone, item.dataset.animal);\
-      \}\
+      if (zone) handleDrop(null, zone.dataset.zone, item.dataset.animal);\
     \}, \{ passive: true \});\
+  \});\
+  \
+  // Drop zones\
+  document.querySelectorAll('.drop-zone').forEach(zone => \{\
+    zone.addEventListener('dragover', e => \{\
+      e.preventDefault();\
+      zone.classList.add('highlight');\
+    \});\
+    zone.addEventListener('dragleave', () => zone.classList.remove('highlight'));\
+    zone.addEventListener('drop', e => \{\
+      e.preventDefault();\
+      zone.classList.remove('highlight');\
+      const animal = e.dataTransfer.getData('text/plain');\
+      handleDrop(e, zone.dataset.zone, animal);\
+    \});\
   \});\
 \}\
 \
 function handleDrop(event, zone, animal) \{\
-  if (event) \{\
-    event.preventDefault();\
-    event.currentTarget.classList.remove('highlight');\
-    animal = event.dataTransfer.getData('text/plain');\
-  \}\
-  \
   const data = DRAG_DATA[animal];\
   if (!data) return;\
-\
+  \
   const zoneEl = document.getElementById(`zone-$\{zone\}`);\
   const feedback = document.getElementById('drag-feedback');\
   const itemEl = document.getElementById(`drag-$\{animal\}`);\
-\
+  \
   if (data.home === zone) \{\
-    zoneEl.textContent = data.emoji;\
-    zoneEl.classList.add('filled');\
-    itemEl.style.display = 'none';\
-    feedback.textContent = '\uc0\u9989  \u1055 \u1088 \u1072 \u1074 \u1080 \u1083 \u1100 \u1085 \u1086 ! \u1052 \u1086 \u1083 \u1086 \u1076 \u1077 \u1094 ! \u55356 \u57225 ';\
-    feedback.style.color = '#10B981';\
+    if (zoneEl) \{\
+      zoneEl.textContent = data.emoji;\
+      zoneEl.classList.add('filled');\
+    \}\
+    if (itemEl) itemEl.style.display = 'none';\
+    if (feedback) \{\
+      feedback.textContent = '\uc0\u9989  \u1055 \u1088 \u1072 \u1074 \u1080 \u1083 \u1100 \u1085 \u1086 ! \u1052 \u1086 \u1083 \u1086 \u1076 \u1077 \u1094 ! \u55356 \u57225 ';\
+      feedback.style.color = '#10B981';\
+    \}\
     STATE.dragCorrect++;\
     playSuccessSound();\
     \
     if (STATE.dragCorrect >= STATE.dragTotal) \{\
       setTimeout(() => \{\
-        feedback.textContent = '\uc0\u55356 \u57286  \u1042 \u1089 \u1077  \u1078 \u1080 \u1074 \u1086 \u1090 \u1085 \u1099 \u1077  \u1085 \u1072 \u1096 \u1083 \u1080  \u1089 \u1074 \u1086 \u1080  \u1076 \u1086 \u1084 \u1080 \u1082 \u1080 !';\
+        if (feedback) feedback.textContent = '\uc0\u55356 \u57286  \u1042 \u1089 \u1077  \u1078 \u1080 \u1074 \u1086 \u1090 \u1085 \u1099 \u1077  \u1085 \u1072 \u1096 \u1083 \u1080  \u1089 \u1074 \u1086 \u1080  \u1076 \u1086 \u1084 \u1080 \u1082 \u1080 !';\
         playConfetti();\
         awardStar('\uc0\u1055 \u1077 \u1088 \u1077 \u1090 \u1072 \u1089 \u1082 \u1080 \u1074 \u1072 \u1085 \u1080 \u1077 ');\
       \}, 500);\
     \}\
   \} else \{\
-    feedback.textContent = '\uc0\u10060  \u1053 \u1077  \u1089 \u1086 \u1074 \u1089 \u1077 \u1084 ... \u1055 \u1086 \u1087 \u1088 \u1086 \u1073 \u1091 \u1081  \u1077 \u1097 \u1105  \u1088 \u1072 \u1079 ! \u55357 \u56490 ';\
-    feedback.style.color = '#F97316';\
+    if (feedback) \{\
+      feedback.textContent = '\uc0\u10060  \u1053 \u1077  \u1089 \u1086 \u1074 \u1089 \u1077 \u1084 ... \u1055 \u1086 \u1087 \u1088 \u1086 \u1073 \u1091 \u1081  \u1077 \u1097 \u1105  \u1088 \u1072 \u1079 ! \u55357 \u56490 ';\
+      feedback.style.color = '#F97316';\
+    \}\
     playErrorSound();\
-    \
-    const itemEl2 = document.getElementById(`drag-$\{animal\}`);\
-    if (itemEl2) \{ \
-      itemEl2.style.animation = 'shake 0.4s ease'; \
-      setTimeout(() => itemEl2.style.animation = '', 500); \
+    if (itemEl) \{\
+      itemEl.style.animation = 'shake 0.4s ease';\
+      setTimeout(() => itemEl.style.animation = '', 500);\
     \}\
   \}\
 \}\
@@ -804,523 +880,4 @@ function resetDragGame() \{\
     if (el) el.style.display = '';\
   \});\
   ['water','sky','forest'].forEach(z => \{\
-    const el = document.getElementById(`zone-$\{z\}`);\
-    if (el) \{\
-      el.classList.remove('filled');\
-      el.innerHTML = (z === 'water' ? '\uc0\u55356 \u57098 ' : z === 'sky' ? '\u9729 \u65039 ' : '\u55356 \u57138 ') + \
-        `<span class="zone-label">$\{z === 'water' ? '\uc0\u1042 \u1086 \u1076 \u1072 ' : z === 'sky' ? '\u1053 \u1077 \u1073 \u1086 ' : '\u1051 \u1077 \u1089 '\}</span>`;\
-    \}\
-  \});\
-  document.getElementById('drag-feedback').textContent = '';\
-  playClickSound();\
-\}\
-\
-// \uc0\u1057 \u1082 \u1072 \u1079 \u1082 \u1080 \
-function generateStory() \{\
-  const heroKey = document.getElementById('story-hero').value;\
-  const placeKey = document.getElementById('story-place').value;\
-  const hero = STORY_TEMPLATES[heroKey];\
-  const place = STORY_PLACES[placeKey];\
-  const template = STORY_ADVENTURES[Math.floor(Math.random() * STORY_ADVENTURES.length)];\
-  STATE.currentStory = template(hero, place);\
-  \
-  const out = document.getElementById('story-output');\
-  out.textContent = STATE.currentStory;\
-  out.style.opacity = '0';\
-  setTimeout(() => \{ \
-    out.style.transition = 'opacity 0.5s'; \
-    out.style.opacity = '1'; \
-  \}, 10);\
-  \
-  playClickSound();\
-\}\
-\
-function readStoryAloud() \{\
-  if (!STATE.currentStory) \{ generateStory(); return; \}\
-  if ('speechSynthesis' in window) \{\
-    window.speechSynthesis.cancel();\
-    const utt = new SpeechSynthesisUtterance(STATE.currentStory.replace(/[^\\w\\s!?.,]/g, ''));\
-    utt.lang = 'ru-RU';\
-    utt.rate = 0.85;\
-    utt.pitch = 1.1;\
-    window.speechSynthesis.speak(utt);\
-    awardStar('\uc0\u1057 \u1082 \u1072 \u1079 \u1082 \u1072 ');\
-  \}\
-\}\
-\
-function downloadStory() \{\
-  if (!STATE.currentStory) \{ generateStory(); \}\
-  const blob = new Blob([STATE.currentStory], \{type:'text/plain;charset=utf-8'\});\
-  const link = document.createElement('a');\
-  link.href = URL.createObjectURL(blob);\
-  link.download = '\uc0\u1084 \u1086 \u1103 -\u1089 \u1082 \u1072 \u1079 \u1082 \u1072 .txt';\
-  link.click();\
-\}\
-\
-// \uc0\u1055 \u1088 \u1086 \u1075 \u1088 \u1072 \u1084 \u1084 \u1080 \u1088 \u1086 \u1074 \u1072 \u1085 \u1080 \u1077  - \u1050 \u1086 \u1085 \u1089 \u1090 \u1088 \u1091 \u1082 \u1090 \u1086 \u1088  \u1080 \u1075 \u1088 \
-function addBlock(blockId) \{\
-  const def = BLOCK_DEFS[blockId];\
-  if (!def) return;\
-  \
-  STATE.gameBlocks.push(blockId);\
-  \
-  const canvas = document.getElementById('code-canvas');\
-  const placeholder = document.getElementById('canvas-placeholder');\
-  if (placeholder) placeholder.style.display = 'none';\
-  \
-  const el = document.createElement('div');\
-  el.className = `code-block $\{def.type\}`;\
-  el.textContent = def.label;\
-  el.dataset.block = blockId;\
-  el.onclick = () => \{\
-    el.remove();\
-    const idx = STATE.gameBlocks.lastIndexOf(blockId);\
-    if (idx > -1) STATE.gameBlocks.splice(idx, 1);\
-  \};\
-  canvas.appendChild(el);\
-  playClickSound();\
-\}\
-\
-function clearBlocks() \{\
-  STATE.gameBlocks = [];\
-  const canvas = document.getElementById('code-canvas');\
-  canvas.innerHTML = '<p style="color:var(--text-dim); font-size:0.85rem; pointer-events:none;" id="canvas-placeholder">\uc0\u1053 \u1072 \u1078 \u1084 \u1080  \u1085 \u1072  \u1073 \u1083 \u1086 \u1082 \u1080  \u1089 \u1074 \u1077 \u1088 \u1093 \u1091 , \u1095 \u1090 \u1086 \u1073 \u1099  \u1076 \u1086 \u1073 \u1072 \u1074 \u1080 \u1090 \u1100  \u1080 \u1093  \u1074  \u1087 \u1088 \u1086 \u1075 \u1088 \u1072 \u1084 \u1084 \u1091  \u8593 </p>';\
-  resetGame();\
-  playClickSound();\
-\}\
-\
-function runGame() \{\
-  if (STATE.gameBlocks.length === 0) \{\
-    shakePlayer();\
-    return;\
-  \}\
-  \
-  const player = document.getElementById('game-player');\
-  let x = 50, y = 210;\
-  let rotation = 0, scale = 1;\
-  \
-  // \uc0\u1042 \u1099 \u1087 \u1086 \u1083 \u1085 \u1103 \u1077 \u1084  \u1073 \u1083 \u1086 \u1082 \u1080  \u1087 \u1086 \u1089 \u1083 \u1077 \u1076 \u1086 \u1074 \u1072 \u1090 \u1077 \u1083 \u1100 \u1085 \u1086  \u1089  \u1079 \u1072 \u1076 \u1077 \u1088 \u1078 \u1082 \u1086 \u1081 \
-  let delay = 0;\
-  STATE.gameBlocks.forEach((blockId, index) => \{\
-    setTimeout(() => \{\
-      const def = BLOCK_DEFS[blockId];\
-      if (!def) return;\
-      \
-      switch(blockId) \{\
-        case 'move_right':\
-          x = Math.min(560, x + 40);\
-          break;\
-        case 'move_left':\
-          x = Math.max(0, x - 40);\
-          break;\
-        case 'move_up':\
-          y = Math.max(0, y - 40);\
-          break;\
-        case 'move_down':\
-          y = Math.min(260, y + 40);\
-          break;\
-        case 'jump':\
-          player.style.transition = 'all 0.2s';\
-          player.style.transform = `translateY(-30px) rotate($\{rotation\}deg) scale($\{scale\})`;\
-          setTimeout(() => \{\
-            player.style.transform = `translateY(0) rotate($\{rotation\}deg) scale($\{scale\})`;\
-          \}, 200);\
-          break;\
-        case 'spin':\
-          rotation += 90;\
-          break;\
-        case 'change_color':\
-          const colors = ['#F97316', '#7C3AED', '#0D9488', '#EC4899', '#FBBF24'];\
-          player.style.background = colors[Math.floor(Math.random() * colors.length)];\
-          break;\
-        case 'grow':\
-          scale = Math.min(2, scale + 0.3);\
-          break;\
-        case 'play_sound':\
-          playClickSound();\
-          break;\
-      \}\
-      \
-      player.style.left = x + 'px';\
-      player.style.top = y + 'px';\
-      player.style.transform = `rotate($\{rotation\}deg) scale($\{scale\})`;\
-      \
-      // \uc0\u1055 \u1088 \u1086 \u1074 \u1077 \u1088 \u1082 \u1072  \u1082 \u1086 \u1083 \u1083 \u1080 \u1079 \u1080 \u1081  \u1089  \u1084 \u1086 \u1085 \u1077 \u1090 \u1072 \u1084 \u1080 \
-      checkCoinCollision(x, y);\
-      \
-    \}, delay);\
-    delay += 400;\
-  \});\
-  \
-  if (STATE.gameBlocks.length >= 3) \{\
-    setTimeout(() => awardStar('\uc0\u1048 \u1075 \u1088 \u1072 '), delay);\
-  \}\
-\}\
-\
-function checkCoinCollision(px, py) \{\
-  const coins = document.querySelectorAll('.game-coin');\
-  coins.forEach(coin => \{\
-    const cx = parseInt(coin.style.left);\
-    const cy = parseInt(coin.style.top);\
-    const dist = Math.sqrt(Math.pow(px - cx, 2) + Math.pow(py - cy, 2));\
-    \
-    if (dist < 40 && coin.style.display !== 'none') \{\
-      coin.style.display = 'none';\
-      STATE.gameScore += 10;\
-      document.getElementById('game-score').textContent = STATE.gameScore;\
-      playSuccessSound();\
-    \}\
-  \});\
-\}\
-\
-function shakePlayer() \{\
-  const player = document.getElementById('game-player');\
-  player.style.animation = 'shake 0.4s ease';\
-  setTimeout(() => player.style.animation = '', 500);\
-\}\
-\
-function resetGame() \{\
-  STATE.gameScore = 0;\
-  document.getElementById('game-score').textContent = '0';\
-  \
-  const player = document.getElementById('game-player');\
-  player.style.left = '50px';\
-  player.style.top = '210px';\
-  player.style.transform = 'none';\
-  player.style.background = '#F97316';\
-  \
-  document.querySelectorAll('.game-coin').forEach(coin => \{\
-    coin.style.display = 'flex';\
-  \});\
-\}\
-\
-function exportGame() \{\
-  if (STATE.gameBlocks.length === 0) \{ \
-    alert('\uc0\u1057 \u1085 \u1072 \u1095 \u1072 \u1083 \u1072  \u1076 \u1086 \u1073 \u1072 \u1074 \u1100  \u1073 \u1083 \u1086 \u1082 \u1080 !'); \
-    return; \
-  \}\
-  \
-  const code = `// \uc0\u55356 \u57262  \u1052 \u1086 \u1103  \u1080 \u1075 \u1088 \u1072  \u1085 \u1072  JavaScript!\
-// \uc0\u1057 \u1086 \u1079 \u1076 \u1072 \u1085 \u1086  \u1074  \u1040 \u1048 -\u1040 \u1082 \u1072 \u1076 \u1077 \u1084 \u1080 \u1080 !\
-\
-const canvas = document.getElementById('gameCanvas');\
-const ctx = canvas.getContext('2d');\
-let player = \{ x: 50, y: 200, rotation: 0, scale: 1 \};\
-\
-function gameLoop() \{\
-  $\{STATE.gameBlocks.map(b => \{\
-    switch(b) \{\
-      case 'move_right': return '  player.x += 5;';\
-      case 'move_left': return '  player.x -= 5;';\
-      case 'move_up': return '  player.y -= 5;';\
-      case 'move_down': return '  player.y += 5;';\
-      case 'jump': return '  player.y -= 20; setTimeout(() => player.y += 20, 200);';\
-      case 'spin': return '  player.rotation += 5;';\
-      default: return '';\
-    \}\
-  \}).filter(Boolean).join('\\n')\}\
-  \
-  // \uc0\u1056 \u1080 \u1089 \u1091 \u1077 \u1084  \u1080 \u1075 \u1088 \u1086 \u1082 \u1072 \
-  ctx.save();\
-  ctx.translate(player.x, player.y);\
-  ctx.rotate(player.rotation * Math.PI / 180);\
-  ctx.scale(player.scale, player.scale);\
-  ctx.fillStyle = '#F97316';\
-  ctx.fillRect(-20, -20, 40, 40);\
-  ctx.restore();\
-  \
-  requestAnimationFrame(gameLoop);\
-\}\
-\
-gameLoop();`;\
-  \
-  const blob = new Blob([code], \{type:'text/javascript'\});\
-  const link = document.createElement('a');\
-  link.href = URL.createObjectURL(blob);\
-  link.download = '\uc0\u1084 \u1086 \u1103 -\u1080 \u1075 \u1088 \u1072 .js';\
-  link.click();\
-\}\
-\
-// \uc0\u1063 \u1072 \u1090 -\u1073 \u1086 \u1090 \
-function initBotRules() \{\
-  if (STATE.botRules.length === 0) \{\
-    STATE.botRules = [\
-      \{ trigger: '\uc0\u1087 \u1088 \u1080 \u1074 \u1077 \u1090 ', response: '\u1055 \u1088 \u1080 \u1074 \u1077 \u1090 -\u1087 \u1088 \u1080 \u1074 \u1077 \u1090 ! \u55357 \u56395  \u1071  \u1088 \u1072 \u1076  \u1090 \u1077 \u1073 \u1103  \u1074 \u1080 \u1076 \u1077 \u1090 \u1100 !' \},\
-      \{ trigger: '\uc0\u1082 \u1072 \u1082  \u1076 \u1077 \u1083 \u1072 ', response: '\u1054 \u1090 \u1083 \u1080 \u1095 \u1085 \u1086 ! \u1058 \u1086 \u1083 \u1100 \u1082 \u1086  \u1095 \u1090 \u1086  \u1086 \u1073 \u1085 \u1086 \u1074 \u1080 \u1083  \u1087 \u1088 \u1086 \u1075 \u1088 \u1072 \u1084 \u1084 \u1091 ! \u55357 \u56507 ' \},\
-      \{ trigger: '\uc0\u1087 \u1086 \u1082 \u1072 ', response: '\u1055 \u1086 \u1082 \u1072 ! \u1042 \u1086 \u1079 \u1074 \u1088 \u1072 \u1097 \u1072 \u1081 \u1089 \u1103  \u1089 \u1082 \u1086 \u1088 \u1077 \u1077 ! \u55357 \u56395 ' \},\
-      \{ trigger: '\uc0\u1095 \u1090 \u1086  \u1090 \u1099  \u1091 \u1084 \u1077 \u1077 \u1096 \u1100 ', response: '\u1071  \u1091 \u1084 \u1077 \u1102  \u1086 \u1090 \u1074 \u1077 \u1095 \u1072 \u1090 \u1100  \u1085 \u1072  \u1074 \u1086 \u1087 \u1088 \u1086 \u1089 \u1099 ! \u1047 \u1072 \u1076 \u1072 \u1081  \u1084 \u1085 \u1077  \u1095 \u1090 \u1086 -\u1085 \u1080 \u1073 \u1091 \u1076 \u1100 ! \u55358 \u56596 ' \}\
-    ];\
-  \}\
-  renderBotRules();\
-\}\
-\
-function renderBotRules() \{\
-  const el = document.getElementById('bot-rules');\
-  el.innerHTML = STATE.botRules.map((r, i) => \
-    `<span style="background:rgba(255,255,255,0.06); border-radius:8px; padding:3px 8px; margin:2px; display:inline-block;">\
-      "$\{r.trigger\}" \uc0\u8594  "$\{r.response.slice(0,25)\}..." \
-      <button onclick="removeBotRule($\{i\})" style="background:none;border:none;color:#F97316;cursor:pointer;font-size:0.9rem;">\uc0\u10005 </button>\
-    </span>`\
-  ).join('');\
-\}\
-\
-function addBotRule() \{\
-  const trigger = document.getElementById('bot-trigger').value.trim().toLowerCase();\
-  const response = document.getElementById('bot-response').value.trim();\
-  \
-  if (!trigger || !response) \{ \
-    document.getElementById('bot-trigger').style.borderColor = '#F97316';\
-    setTimeout(() => document.getElementById('bot-trigger').style.borderColor = '', 1000);\
-    return; \
-  \}\
-  \
-  STATE.botRules.push(\{ trigger, response \});\
-  localStorage.setItem('ai-kids-botrules', JSON.stringify(STATE.botRules));\
-  document.getElementById('bot-trigger').value = '';\
-  document.getElementById('bot-response').value = '';\
-  renderBotRules();\
-  playClickSound();\
-\}\
-\
-function removeBotRule(i) \{\
-  STATE.botRules.splice(i, 1);\
-  localStorage.setItem('ai-kids-botrules', JSON.stringify(STATE.botRules));\
-  renderBotRules();\
-\}\
-\
-function updateBotName() \{\
-  STATE.botName = document.getElementById('bot-name').value || '\uc0\u1041 \u1080 \u1087 \u1080 \u1082 ';\
-  localStorage.setItem('ai-kids-botname', STATE.botName);\
-\}\
-\
-function sendChat() \{\
-  const input = document.getElementById('chat-input');\
-  const text = input.value.trim();\
-  if (!text) return;\
-  input.value = '';\
-  \
-  const chatWin = document.getElementById('chat-window');\
-  \
-  const userMsg = document.createElement('div');\
-  userMsg.className = 'chat-msg user';\
-  userMsg.textContent = text;\
-  chatWin.appendChild(userMsg);\
-  \
-  const typing = document.createElement('div');\
-  typing.className = 'chat-msg bot';\
-  typing.setAttribute('data-name', STATE.botName);\
-  typing.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';\
-  chatWin.appendChild(typing);\
-  chatWin.scrollTop = chatWin.scrollHeight;\
-  \
-  setTimeout(() => \{\
-    typing.remove();\
-    const response = getBotResponse(text.toLowerCase());\
-    const botMsg = document.createElement('div');\
-    botMsg.className = 'chat-msg bot';\
-    botMsg.setAttribute('data-name', STATE.botName);\
-    botMsg.textContent = response;\
-    chatWin.appendChild(botMsg);\
-    chatWin.scrollTop = chatWin.scrollHeight;\
-    playClickSound();\
-  \}, 800 + Math.random() * 600);\
-  \
-  playClickSound();\
-\}\
-\
-function getBotResponse(text) \{\
-  for (const rule of STATE.botRules) \{\
-    if (text.includes(rule.trigger)) return rule.response;\
-  \}\
-  const defaults = [\
-    `\uc0\u1048 \u1085 \u1090 \u1077 \u1088 \u1077 \u1089 \u1085 \u1099 \u1081  \u1074 \u1086 \u1087 \u1088 \u1086 \u1089 ! \u1071  \u1087 \u1086 \u1082 \u1072  \u1085 \u1077  \u1079 \u1085 \u1072 \u1102  \u1086 \u1090 \u1074 \u1077 \u1090 \u1072 , \u1085 \u1086  \u1091 \u1095 \u1091 \u1089 \u1100 ! \u55358 \u56596 `,\
-    `\uc0\u1061 \u1084 , \u1101 \u1090 \u1086  \u1089 \u1083 \u1086 \u1078 \u1085 \u1086 ... \u1057 \u1087 \u1088 \u1086 \u1089 \u1080  \u1084 \u1077 \u1085 \u1103  \u1095 \u1090 \u1086 -\u1090 \u1086  \u1076 \u1088 \u1091 \u1075 \u1086 \u1077 ! \u55357 \u56493 `,\
-    `\uc0\u1041 \u1080 \u1087 -\u1073 \u1086 \u1087 ! \u1058 \u1072 \u1082 \u1086 \u1075 \u1086  \u1074 \u1086 \u1087 \u1088 \u1086 \u1089 \u1072  \u1091  \u1084 \u1077 \u1085 \u1103  \u1077 \u1097 \u1105  \u1085 \u1077  \u1073 \u1099 \u1083 \u1086 ! \u55358 \u56598 `\
-  ];\
-  return defaults[Math.floor(Math.random() * defaults.length)];\
-\}\
-\
-// \uc0\u1055 \u1088 \u1086 \u1084 \u1087 \u1090 \u1099 \
-function generatePrompt() \{\
-  const who = document.getElementById('p-who').value;\
-  const where = document.getElementById('p-where').value;\
-  const action = document.getElementById('p-action').value;\
-  const style = document.getElementById('p-style').value;\
-  \
-  const extras = ['\uc0\u1103 \u1088 \u1082 \u1080 \u1077  \u1094 \u1074 \u1077 \u1090 \u1072 ', '\u1084 \u1103 \u1075 \u1082 \u1086 \u1077  \u1086 \u1089 \u1074 \u1077 \u1097 \u1077 \u1085 \u1080 \u1077 ', '\u1076 \u1077 \u1090 \u1072 \u1083 \u1100 \u1085 \u1099 \u1081  \u1092 \u1086 \u1085 ', '\u1074 \u1086 \u1083 \u1096 \u1077 \u1073 \u1085 \u1072 \u1103  \u1072 \u1090 \u1084 \u1086 \u1089 \u1092 \u1077 \u1088 \u1072 '];\
-  const extra = extras[Math.floor(Math.random() * extras.length)];\
-  \
-  STATE.currentPrompt = `$\{who\}, \uc0\u1082 \u1086 \u1090 \u1086 \u1088 \u1099 \u1081  $\{action\} $\{where\}, \u1089 \u1090 \u1080 \u1083 \u1100 : $\{style\}, $\{extra\}, \u1074 \u1099 \u1089 \u1086 \u1082 \u1086 \u1077  \u1082 \u1072 \u1095 \u1077 \u1089 \u1090 \u1074 \u1086 , \u1076 \u1077 \u1090 \u1089 \u1082 \u1072 \u1103  \u1080 \u1083 \u1083 \u1102 \u1089 \u1090 \u1088 \u1072 \u1094 \u1080 \u1103 `;\
-  \
-  const el = document.getElementById('prompt-result');\
-  el.textContent = STATE.currentPrompt;\
-  el.style.transform = 'scale(0.95)';\
-  setTimeout(() => \{ \
-    el.style.transition = 'transform 0.3s'; \
-    el.style.transform = 'scale(1)'; \
-  \}, 10);\
-  \
-  playClickSound();\
-\}\
-\
-function copyPrompt() \{\
-  if (!STATE.currentPrompt) \{ generatePrompt(); return; \}\
-  \
-  navigator.clipboard.writeText(STATE.currentPrompt).then(() => \{\
-    const btn = event.currentTarget;\
-    btn.textContent = '\uc0\u9989  \u1057 \u1082 \u1086 \u1087 \u1080 \u1088 \u1086 \u1074 \u1072 \u1085 \u1086 !';\
-    setTimeout(() => btn.textContent = '\uc0\u55357 \u56523  \u1050 \u1086 \u1087 \u1080 \u1088 \u1086 \u1074 \u1072 \u1090 \u1100 ', 2000);\
-    playSuccessSound();\
-  \}).catch(() => \{\
-    const ta = document.createElement('textarea');\
-    ta.value = STATE.currentPrompt;\
-    document.body.appendChild(ta);\
-    ta.select();\
-    document.execCommand('copy');\
-    document.body.removeChild(ta);\
-  \});\
-\}\
-\
-// \uc0\u1052 \u1080 \u1085 \u1080 -\u1087 \u1088 \u1086 \u1077 \u1082 \u1090 \u1099 \
-function initProjectsGrid() \{\
-  const grid = document.getElementById('projects-grid');\
-  if (!grid) return;\
-  \
-  grid.innerHTML = PROJECTS.map(p => `\
-    <div class="project-card" onclick="openProject('$\{p.id\}')">\
-      <span class="project-icon">$\{p.icon\}</span>\
-      <h4>$\{p.title\}</h4>\
-      <p>$\{p.desc\}</p>\
-      <div style="font-size:0.8rem; color:var(--text-dim); margin-top:4px;">$\{p.difficulty\}</div>\
-      <div class="project-stars">$\{p.stars\}</div>\
-      $\{STATE.completedModules[`project-$\{p.id\}`] ? '<div style="color:#10B981; font-size:0.8rem; margin-top:4px;">\uc0\u9989  \u1042 \u1099 \u1087 \u1086 \u1083 \u1085 \u1077 \u1085 \u1086 !</div>' : ''\}\
-    </div>\
-  `).join('');\
-\}\
-\
-function openProject(id) \{\
-  const project = PROJECTS.find(p => p.id === id);\
-  if (!project) return;\
-  \
-  alert(`$\{project.icon\} $\{project.title\}\\n\\n$\{project.steps.map((s, i) => `$\{i+1\}. $\{s.title\}: $\{s.text\}`).join('\\n\\n')\}`);\
-  awardStar('\uc0\u1055 \u1088 \u1086 \u1077 \u1082 \u1090 ');\
-\}\
-\
-// \uc0\u1071 \u1079 \u1099 \u1082 \u1080 \
-function initLanguageGames() \{\
-  updateWordCard('en');\
-  updateWordCard('zh');\
-  updateGameOptions('en');\
-  updateGameOptions('zh');\
-\}\
-\
-function switchLang(lang) \{\
-  STATE.currentLang = lang;\
-  document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));\
-  event.target.classList.add('active');\
-  \
-  document.querySelectorAll('.lang-content').forEach(c => c.classList.remove('active'));\
-  document.getElementById(`lang-$\{lang\}`).classList.add('active');\
-  \
-  // Reset category\
-  STATE.currentCategory = 'animals';\
-  document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));\
-  document.querySelector(`#lang-$\{lang\} .category-tab`).classList.add('active');\
-  \
-  updateWordCard(lang);\
-  updateGameOptions(lang);\
-\}\
-\
-function switchCategory(lang, cat) \{\
-  STATE.currentCategory = cat;\
-  STATE.wordIndices[lang] = 0;\
-  \
-  const container = document.getElementById(`lang-$\{lang\}`);\
-  container.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));\
-  event.target.classList.add('active');\
-  \
-  updateWordCard(lang);\
-  updateGameOptions(lang);\
-\}\
-\
-function updateWordCard(lang) \{\
-  const data = LANG_DATA[lang][STATE.currentCategory];\
-  const idx = STATE.wordIndices[lang] % data.length;\
-  const word = data[idx];\
-  \
-  document.getElementById(`$\{lang\}-word`).textContent = word.word;\
-  document.getElementById(`$\{lang\}-transcription`).textContent = word.transcription;\
-  document.getElementById(`$\{lang\}-translation`).textContent = word.translation;\
-\}\
-\
-function nextWord(lang) \{\
-  STATE.wordIndices[lang]++;\
-  updateWordCard(lang);\
-  playClickSound();\
-\}\
-\
-function speakWord(lang) \{\
-  const data = LANG_DATA[lang][STATE.currentCategory];\
-  const idx = STATE.wordIndices[lang] % data.length;\
-  const word = data[idx];\
-  \
-  if ('speechSynthesis' in window) \{\
-    const utt = new SpeechSynthesisUtterance(word.word);\
-    utt.lang = lang === 'zh' ? 'zh-CN' : 'en-US';\
-    utt.rate = 0.8;\
-    window.speechSynthesis.speak(utt);\
-  \}\
-\}\
-\
-function updateGameOptions(lang) \{\
-  const data = LANG_DATA[lang][STATE.currentCategory];\
-  const idx = STATE.wordIndices[lang] % data.length;\
-  const correct = data[idx];\
-  \
-  // \uc0\u1055 \u1086 \u1083 \u1091 \u1095 \u1072 \u1077 \u1084  2 \u1085 \u1077 \u1087 \u1088 \u1072 \u1074 \u1080 \u1083 \u1100 \u1085 \u1099 \u1093  \u1086 \u1090 \u1074 \u1077 \u1090 \u1072 \
-  const wrong = data.filter((_, i) => i !== idx).sort(() => Math.random() - 0.5).slice(0, 2);\
-  const options = [correct, ...wrong].sort(() => Math.random() - 0.5);\
-  \
-  const container = document.getElementById(`$\{lang\}-game-options`);\
-  container.innerHTML = options.map(opt => \
-    `<button class="btn btn-sm" onclick="checkAnswer('$\{lang\}', '$\{opt.translation\}')">$\{opt.translation\}</button>`\
-  ).join('');\
-  \
-  document.getElementById(`$\{lang\}-game-word`).textContent = correct.word;\
-  document.getElementById(`$\{lang\}-game-result`).textContent = '';\
-\}\
-\
-function checkAnswer(lang, answer) \{\
-  const data = LANG_DATA[lang][STATE.currentCategory];\
-  const idx = STATE.wordIndices[lang] % data.length;\
-  const correct = data[idx];\
-  \
-  const resultEl = document.getElementById(`$\{lang\}-game-result`);\
-  \
-  if (answer === correct.translation) \{\
-    resultEl.textContent = '\uc0\u9989  \u1055 \u1088 \u1072 \u1074 \u1080 \u1083 \u1100 \u1085 \u1086 ! \u1052 \u1086 \u1083 \u1086 \u1076 \u1077 \u1094 !';\
-    resultEl.style.color = '#10B981';\
-    playSuccessSound();\
-    awardStar(lang === 'en' ? '\uc0\u1040 \u1085 \u1075 \u1083 \u1080 \u1081 \u1089 \u1082 \u1080 \u1081 ' : '\u1050 \u1080 \u1090 \u1072 \u1081 \u1089 \u1082 \u1080 \u1081 ');\
-    setTimeout(() => \{\
-      nextWord(lang);\
-      updateGameOptions(lang);\
-    \}, 1500);\
-  \} else \{\
-    resultEl.textContent = '\uc0\u10060  \u1055 \u1086 \u1087 \u1088 \u1086 \u1073 \u1091 \u1081  \u1077 \u1097 \u1105  \u1088 \u1072 \u1079 !';\
-    resultEl.style.color = '#F97316';\
-    playErrorSound();\
-  \}\
-\}\
-\
-// \uc0\u1050 \u1085 \u1086 \u1087 \u1082 \u1080  \u1089  \u1072 \u1085 \u1080 \u1084 \u1072 \u1094 \u1080 \u1077 \u1081 \
-document.querySelectorAll('.btn').forEach(btn => \{\
-  btn.addEventListener('click', function() \{\
-    this.classList.remove('bounce-anim');\
-    void this.offsetWidth;\
-    this.classList.add('bounce-anim');\
-    setTimeout(() => this.classList.remove('bounce-anim'), 500);\
-  \});\
-\});\
-\
-console.log('\uc0\u55358 \u56598  \u1040 \u1048 -\u1040 \u1082 \u1072 \u1076 \u1077 \u1084 \u1080 \u1103  2.0 \u1079 \u1072 \u1075 \u1088 \u1091 \u1078 \u1077 \u1085 \u1072 !');}
+    const el = document.getElementById(`zone-$\{z\}`);}
