@@ -2,543 +2,1079 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>🤖 АИ-Академия 2.0</title>
-<link rel="stylesheet" href="styles.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkinSync — Умный уход за кожей</title>
+<meta name="description" content="ИИ анализирует вашу косметику: конфликты ингредиентов, ритуал ухода, восстановление после процедур">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--ivory:#FAF7F2;--warm:#F3EDE3;--gold:#B8965A;--ink:#1C1916;--muted:#8C836F;--border:#E8E0D0;--danger:#9B3A2F;--warn:#A0743A;--ok:#3A6E50}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);font-weight:300;line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 60px;height:64px;display:flex;align-items:center;justify-content:space-between;background:var(--ivory);border-bottom:1px solid var(--border)}
+.nav-brand{font-family:'Playfair Display',serif;font-size:22px;font-weight:400;color:var(--ink);text-decoration:none}
+.nav-brand span{color:var(--gold);font-style:italic}
+.nav-links{display:flex;gap:36px}
+.nav-links a{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--ink)}
+.nav-cta{font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:none;border:none;cursor:pointer;transition:opacity .2s}
+.nav-cta:hover{opacity:.7}
+.free-badge{font-size:11px;font-weight:500;letter-spacing:1px;color:var(--ok);border:1px solid var(--ok);padding:4px 12px}
+.free-badge.warn{color:var(--warn);border-color:var(--warn)}
+.free-badge.empty{color:var(--danger);border-color:var(--danger)}
+
+/* HERO */
+.hero{min-height:100vh;padding-top:64px;display:flex;flex-direction:column}
+.hero-inner{flex:1;display:grid;grid-template-columns:1fr 1fr;max-width:1200px;margin:0 auto;width:100%;padding:0 60px;align-items:center;gap:80px;min-height:calc(100vh - 64px)}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:11px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:28px}
+.hero-eyebrow::before{content:'';width:28px;height:1px;background:var(--gold)}
+h1{font-family:'Playfair Display',serif;font-size:clamp(44px,5.5vw,72px);font-weight:400;line-height:1.08;letter-spacing:-.5px;margin-bottom:24px}
+h1 em{font-style:italic;color:var(--gold)}
+.hero-sub{font-size:16px;color:var(--muted);line-height:1.75;max-width:400px;margin-bottom:44px}
+.hero-free-note{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--ok);margin-bottom:32px}
+.hero-free-note::before{content:'✓'}
+.hero-actions{display:flex;gap:16px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:'Jost',sans-serif;font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:none;transition:all .25s;text-decoration:none}
+.btn-dark{background:var(--ink);color:var(--ivory);padding:16px 32px}
+.btn-dark:hover{background:var(--gold);transform:translateY(-2px)}
+.btn-ghost{background:transparent;color:var(--muted);padding:16px 0;border-bottom:1px solid var(--border)}
+.btn-ghost:hover{color:var(--ink);border-color:var(--ink)}
+
+/* Hero floating */
+.hero-right{position:relative;height:480px;display:flex;align-items:center;justify-content:center}
+.hero-bg-circle{position:absolute;width:380px;height:380px;border-radius:50%;background:var(--warm);border:1px solid var(--border)}
+.floating-card{position:absolute;background:white;border:1px solid var(--border);padding:14px 20px;font-size:13px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(28,25,22,.06);white-space:nowrap}
+.fc-1{top:60px;left:0;animation:float 4s ease-in-out infinite}
+.fc-2{top:130px;right:-20px;animation:float 4s ease-in-out .8s infinite}
+.fc-3{bottom:130px;left:10px;animation:float 4s ease-in-out 1.6s infinite}
+.fc-danger{position:absolute;bottom:75px;right:0;background:#FBF2F1;border:1px solid #E8C8C4;padding:12px 18px;font-size:12px;color:var(--danger);font-weight:500;display:flex;align-items:center;gap:8px;animation:float 4s ease-in-out .4s infinite}
+.fc-ok-card{position:absolute;top:50%;left:-10px;background:#F1F8F4;border:1px solid #C0DDCA;padding:12px 18px;font-size:12px;color:var(--ok);font-weight:500;display:flex;align-items:center;gap:8px;animation:floatMid 4s ease-in-out 1.2s infinite}
+.fc-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes floatMid{0%,100%{transform:translateY(-50%)}50%{transform:translateY(calc(-50% - 8px))}}
+
+/* MARQUEE */
+.marquee-wrap{border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;padding:14px 0;background:var(--warm)}
+.marquee-track{display:flex;animation:marquee 30s linear infinite;width:max-content}
+.marquee-item{font-size:11px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);padding:0 40px;display:flex;align-items:center;gap:40px}
+.marquee-item::after{content:'✦';color:var(--gold);font-size:8px}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* STATS */
+.stats{padding:80px 60px;max-width:1200px;margin:0 auto}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border)}
+.stat-item{background:var(--ivory);padding:40px 32px}
+.stat-num{font-family:'Playfair Display',serif;font-size:48px;font-weight:400;line-height:1;margin-bottom:8px}
+.stat-lbl{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+
+/* ANALYZER */
+.analyzer-section{padding:100px 60px;max-width:1200px;margin:0 auto}
+.section-eyebrow{font-size:11px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.section-eyebrow::before{content:'';width:24px;height:1px;background:var(--gold)}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(32px,4vw,52px);font-weight:400;line-height:1.1;margin-bottom:60px}
+.section-title em{font-style:italic;color:var(--gold)}
+.analyzer-grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border)}
+.input-col{padding:52px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:22px}
+.result-col{padding:52px;overflow-y:auto;max-height:900px;display:flex;flex-direction:column;gap:28px}
+.col-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:400}
+
+/* API KEY */
+.api-row{display:flex;flex-direction:column;gap:6px}
+.api-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:500}
+.api-inp{border:1px solid var(--border);background:var(--warm);padding:10px 14px;font-family:monospace;font-size:12px;color:var(--ink);outline:none;transition:border-color .2s;width:100%}
+.api-inp:focus{border-color:var(--gold)}
+.api-hint{font-size:10px;color:var(--muted)}
+.api-hint a{color:var(--gold)}
+
+/* FREE COUNTER */
+.free-counter{display:flex;align-items:center;justify-content:space-between;background:var(--warm);border:1px solid var(--border);padding:10px 14px}
+.free-counter-left{font-size:12px;color:var(--muted)}
+.free-counter-left strong{color:var(--ink);font-weight:500}
+.free-dots{display:flex;gap:5px}
+.free-dot{width:10px;height:10px;border-radius:50%;background:var(--ok)}
+.free-dot.used{background:var(--border)}
+
+/* MULTI-PHOTO */
+.photo-zones-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.photo-zone-wrap{display:flex;flex-direction:column;gap:5px}
+.photo-zone-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:center}
+.photo-zone{position:relative;border:1px solid var(--border);background:var(--warm);min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-align:center;padding:14px 8px;cursor:pointer;transition:border-color .2s,box-shadow .2s;overflow:hidden}
+.photo-zone:hover{border-color:var(--gold);box-shadow:0 4px 14px rgba(184,150,90,.12)}
+.photo-zone.has-img{padding:0;border-color:var(--gold)}
+.photo-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;z-index:10;width:100%;height:100%}
+.photo-zone img{width:100%;height:100px;object-fit:cover;display:block}
+.pz-icon{font-size:20px;pointer-events:none}
+.pz-label{font-size:10px;color:var(--muted);pointer-events:none;line-height:1.4}
+.pz-label strong{color:var(--ink);font-weight:500;display:block}
+.pz-check{position:absolute;top:5px;right:5px;background:var(--ok);color:white;width:16px;height:16px;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:9px;pointer-events:none}
+.photo-zone.has-img .pz-check{display:flex}
+
+/* 3D SHELF */
+.shelf-viz{display:none;border:1px solid var(--border);background:var(--warm);padding:20px}
+.shelf-viz.active{display:block}
+.shelf-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.shelf-scene{perspective:500px;height:110px;display:flex;align-items:flex-end;justify-content:center;gap:6px;padding-bottom:8px;position:relative}
+.shelf-plank{position:absolute;bottom:0;left:5%;width:90%;height:5px;background:var(--border);border-radius:2px;transform:rotateX(45deg) translateZ(-5px)}
+.jar{position:relative;cursor:pointer;animation:jarIn .4s ease both;transition:transform .2s}
+.jar:hover{transform:translateY(-8px) scale(1.1);z-index:10}
+.jar-lid{width:32px;height:7px;border-radius:3px 3px 0 0;margin-bottom:-1px}
+.jar-body{width:32px;height:44px;border-radius:3px 3px 2px 2px;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 4px 10px rgba(28,25,22,.12)}
+.jar.ok .jar-body{background:#D4EDDA;border:1px solid #A8D5B5}.jar.ok .jar-lid{background:#3A6E50}
+.jar.warn .jar-body{background:#FEF3CD;border:1px solid #F5D57A}.jar.warn .jar-lid{background:#A0743A}
+.jar.danger .jar-body{background:#F8D7DA;border:1px solid #E8A4A0}.jar.danger .jar-lid{background:#9B3A2F}
+.jar-tooltip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--ink);color:var(--ivory);padding:7px 10px;font-size:10px;pointer-events:none;opacity:0;transition:opacity .2s;z-index:20;white-space:nowrap;max-width:160px;white-space:normal;text-align:center;line-height:1.5}
+.jar:hover .jar-tooltip{opacity:1}
+@keyframes jarIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* TAGS */
+.or-divider{display:flex;align-items:center;gap:14px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--border)}
+.or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.tags-field{border:1px solid var(--border);background:var(--warm);padding:10px 14px;min-height:76px;display:flex;flex-wrap:wrap;gap:7px;align-items:flex-start;cursor:text;transition:border-color .2s}
+.tags-field:focus-within{border-color:var(--gold)}
+.tag{background:white;border:1px solid var(--border);padding:3px 10px;font-size:11px;display:flex;align-items:center;gap:5px}
+.tag-x{cursor:pointer;opacity:.4;font-size:13px;line-height:1}.tag-x:hover{opacity:1}
+#tagInput{border:none;outline:none;background:transparent;font-family:'Jost',sans-serif;font-size:12px;font-weight:300;min-width:140px;flex:1;color:var(--ink)}
+#tagInput::placeholder{color:var(--muted)}
+.field-hint{font-size:10px;color:var(--muted)}
+
+/* COSMETIC BAG */
+.bag-block{background:var(--warm);border:1px solid var(--border);padding:14px 18px}
+.bag-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.bag-title{font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--ink)}
+.bag-count{font-size:10px;color:var(--muted)}
+.bag-progress{height:3px;background:var(--border);border-radius:2px;margin-bottom:10px;overflow:hidden}
+.bag-progress-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .5s ease}
+.bag-add-btn{background:none;border:1px solid var(--border);padding:7px 14px;font-family:'Jost',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all .2s;width:100%}
+.bag-add-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+/* ANALYZE BTN */
+.analyze-btn{background:var(--ink);color:var(--ivory);border:none;padding:17px 28px;font-family:'Jost',sans-serif;font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background .25s,transform .2s;display:flex;align-items:center;justify-content:center;gap:10px;width:100%}
+.analyze-btn:hover:not(:disabled){background:var(--gold);transform:translateY(-2px)}
+.analyze-btn:disabled{opacity:.4;cursor:not-allowed}
+.spinner{width:15px;height:15px;border:1.5px solid rgba(250,247,242,.3);border-top-color:var(--ivory);border-radius:50%;animation:spin .7s linear infinite;display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.demo-link{background:none;border:none;font-family:'Jost',sans-serif;font-size:11px;color:var(--muted);cursor:pointer;text-align:center;transition:color .2s;width:100%}
+.demo-link:hover{color:var(--gold)}
+
+/* MODALS */
+.modal-overlay{position:fixed;inset:0;background:rgba(28,25,22,.6);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:24px}
+.modal-overlay.active{display:flex}
+.modal{background:var(--ivory);border:1px solid var(--border);max-width:460px;width:100%;padding:48px 44px;position:relative;animation:modalIn .25s ease}
+@keyframes modalIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.modal-close{position:absolute;top:18px;right:18px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);transition:color .2s}
+.modal-close:hover{color:var(--ink)}
+.modal-eyebrow{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.modal-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:400;line-height:1.2;margin-bottom:10px}
+.modal-sub{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:24px}
+.modal-submit{background:var(--ink);color:var(--ivory);border:none;padding:15px;font-family:'Jost',sans-serif;font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background .25s,transform .2s;width:100%;margin-top:10px}
+.modal-submit:hover{background:var(--gold);transform:translateY(-1px)}
+.modal-divider{display:flex;align-items:center;gap:12px;font-size:10px;color:var(--border);letter-spacing:1px;text-transform:uppercase;margin:14px 0}
+.modal-divider::before,.modal-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.pro-plans{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.pro-plan{border:1px solid var(--border);padding:14px;cursor:pointer;transition:all .2s;text-align:center}
+.pro-plan:hover,.pro-plan.selected{border-color:var(--gold);background:var(--warm)}
+.pro-plan-price{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:3px}
+.pro-plan-desc{font-size:10px;color:var(--muted)}
+.spec-input{border:1px solid var(--border);background:var(--warm);padding:11px 14px;font-family:'Jost',sans-serif;font-size:13px;color:var(--ink);outline:none;transition:border-color .2s;width:100%;margin-bottom:10px}
+.spec-input:focus{border-color:var(--gold)}
+
+/* RESULTS */
+.result-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:.3;gap:12px;min-height:280px}
+.result-empty-mark{font-family:'Playfair Display',serif;font-size:52px;color:var(--gold)}
+.score-block{text-align:center;padding-bottom:26px;border-bottom:1px solid var(--border)}
+.score-ring-wrap{position:relative;width:110px;height:110px;margin:0 auto 12px}
+.score-ring-wrap svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--border);stroke-width:6}
+.ring-fill{fill:none;stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1)}
+.score-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:32px;font-weight:400}
+.score-lbl{font-size:12px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
+.score-summary{font-size:13px;color:var(--muted);line-height:1.7;max-width:300px;margin:0 auto}
+.result-block{border-bottom:1px solid var(--border);padding-bottom:22px}
+.block-title{font-size:10px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.block-title::before{content:'';width:14px;height:1px;background:var(--gold)}
+.conflict-list{display:flex;flex-direction:column;gap:8px}
+.conflict-item{padding:12px 16px;font-size:12px}
+.conflict-item.danger{background:#FBF2F1;border-left:2px solid var(--danger)}
+.conflict-item.warn{background:#FBF7F0;border-left:2px solid var(--warn)}
+.conflict-item.ok{background:#F1F8F4;border-left:2px solid var(--ok)}
+.c-title{font-weight:500;font-size:11px;margin-bottom:2px}
+.conflict-item.danger .c-title{color:var(--danger)}
+.conflict-item.warn .c-title{color:var(--warn)}
+.conflict-item.ok .c-title{color:var(--ok)}
+.c-exp{color:var(--muted);font-size:11px;line-height:1.6}
+.routine-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.r-col-lbl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.r-item{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid var(--border)}
+.r-num{width:20px;height:20px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;flex-shrink:0;color:var(--gold)}
+.r-prod{font-weight:500;font-size:11px;margin-bottom:2px}
+.r-tip{color:var(--muted);font-size:10px;line-height:1.5}
+.tips-list{display:flex;flex-direction:column;gap:8px}
+.tip-item{display:flex;gap:10px;font-size:12px;color:var(--muted);line-height:1.6}
+.share-row{display:flex;gap:8px}
+.share-btn{flex:1;border:1px solid var(--border);background:var(--warm);padding:11px;font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;color:var(--muted);font-family:'Jost',sans-serif;transition:all .2s}
+.share-btn:hover{border-color:var(--gold);color:var(--gold)}
+.err-box{background:#FBF2F1;border-left:2px solid var(--danger);padding:14px 18px;font-size:12px;color:var(--danger);line-height:1.7}
+.recognized-box{background:#FBF8F2;border:1px solid var(--border);padding:10px 14px;font-size:11px;color:var(--gold);display:none}
+
+/* SPECIALIST */
+.specialist-block{background:linear-gradient(135deg,#FBF2F1,#FBF7F0);border:1px solid #E8C8C4;padding:20px;display:none}
+.specialist-block.active{display:block}
+.spec-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.spec-title{font-size:13px;font-weight:500;color:var(--danger)}
+.spec-sub{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:14px}
+.spec-actions{display:flex;gap:8px}
+.spec-btn-primary{background:var(--danger);color:white;border:none;padding:11px 18px;font-family:'Jost',sans-serif;font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:opacity .2s;flex:1}
+.spec-btn-primary:hover{opacity:.85}
+.spec-btn-secondary{background:none;border:1px solid var(--border);padding:11px 18px;font-family:'Jost',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;color:var(--muted);transition:all .2s;flex:1}
+.spec-btn-secondary:hover{border-color:var(--ink);color:var(--ink)}
+
+/* SHOP */
+.shop-section{background:var(--warm);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:100px 60px}
+.shop-inner{max-width:1200px;margin:0 auto}
+.shop-empty{font-size:14px;color:var(--muted);padding:48px 0;text-align:center}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1px;background:var(--border);margin-top:48px}
+.product-card{background:var(--ivory);padding:28px;transition:background .2s,transform .2s;cursor:pointer}
+.product-card:hover{background:white;transform:translateY(-3px);box-shadow:0 8px 24px rgba(28,25,22,.07)}
+.p-img{font-size:36px;margin-bottom:16px}
+.sp-badge{display:inline-block;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold);padding:2px 7px;margin-bottom:10px}
+.p-brand{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
+.p-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:400;margin-bottom:7px;line-height:1.3}
+.p-why{font-size:11px;color:var(--muted);line-height:1.7;margin-bottom:18px}
+.p-footer{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--border)}
+.p-price{font-family:'Playfair Display',serif;font-size:19px;font-weight:400}
+.buy-btn{font-family:'Jost',sans-serif;font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;background:var(--ink);color:var(--ivory);border:none;padding:9px 18px;cursor:pointer;transition:background .2s,transform .2s}
+.buy-btn:hover{background:var(--gold);transform:translateY(-1px)}
+
+/* PROCEDURE */
+.procedure-section{padding:100px 60px;border-top:1px solid var(--border)}
+.proc-inner{max-width:1200px;margin:0 auto}
+.proc-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-top:48px}
+.proc-left{background:var(--ivory);padding:44px}
+.proc-right{background:var(--warm);padding:44px}
+.proc-select{width:100%;border:1px solid var(--border);background:var(--warm);padding:13px 14px;font-family:'Jost',sans-serif;font-size:13px;color:var(--ink);outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238C836F' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;transition:border-color .2s;margin-bottom:16px}
+.proc-select:focus{border-color:var(--gold)}
+.day-selector{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:0}
+.day-btn{width:34px;height:34px;border:1px solid var(--border);background:var(--ivory);font-family:'Jost',sans-serif;font-size:11px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.day-btn:hover{border-color:var(--gold);color:var(--gold)}
+.day-btn.active{background:var(--ink);color:var(--ivory);border-color:var(--ink)}
+.proc-day-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.protocol-empty{font-size:13px;color:var(--muted);opacity:.6;text-align:center;padding:28px 0}
+.protocol-list{display:flex;flex-direction:column;gap:7px}
+.proto-item{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;font-size:12px;line-height:1.5}
+.proto-item.can{background:#F1F8F4;border-left:2px solid var(--ok);color:#2A5A3A}
+.proto-item.cant{background:#FBF2F1;border-left:2px solid var(--danger);color:#7A2A20}
+.proto-phase{font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:7px;margin-top:14px}
+.proto-phase:first-child{margin-top:0}
+.proto-phase.ok{color:var(--ok)}.proto-phase.no{color:var(--danger)}
+
+/* HOW */
+.how-section{padding:100px 60px;max-width:1200px;margin:0 auto}
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-top:60px}
+.step{background:var(--ivory);padding:44px 32px;transition:background .2s,transform .2s}
+.step:hover{background:var(--warm);transform:translateY(-3px)}
+.step-num{font-family:'Playfair Display',serif;font-size:60px;font-weight:400;color:var(--border);line-height:1;margin-bottom:18px}
+.step-title{font-size:15px;font-weight:500;margin-bottom:10px}
+.step-desc{font-size:13px;color:var(--muted);line-height:1.75}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:44px 60px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+.footer-brand{font-family:'Playfair Display',serif;font-size:22px;font-weight:400}
+.footer-brand em{font-style:italic;color:var(--gold)}
+.footer-note{font-size:11px;color:var(--muted)}
+
+/* LOADING */
+.loading-overlay{position:fixed;inset:0;background:rgba(250,247,242,.92);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:300;flex-direction:column;gap:18px}
+.loading-overlay.active{display:flex}
+.loading-ring{width:36px;height:36px;border:1.5px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+.loading-txt{font-size:12px;color:var(--muted);letter-spacing:1px}
+
+/* CONFETTI */
+.confetti-dot{position:fixed;width:7px;height:7px;border-radius:50%;pointer-events:none;z-index:400;animation:confettiFall 1.2s ease forwards}
+@keyframes confettiFall{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(280px) rotate(360deg)}}
+@keyframes successGlow{0%,100%{box-shadow:none}50%{box-shadow:0 0 40px rgba(58,110,80,.18)}}
+.result-col.success{animation:successGlow 1.5s ease}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  nav{padding:0 24px}.nav-links{display:none}
+  .hero-inner{grid-template-columns:1fr;padding:40px 24px;gap:40px;min-height:unset;padding-top:80px}.hero-right{display:none}
+  .stats{padding:48px 24px}.stats-grid{grid-template-columns:repeat(2,1fr)}
+  .analyzer-section,.how-section,.procedure-section{padding:60px 24px}
+  .analyzer-grid,.proc-grid{grid-template-columns:1fr}
+  .input-col{border-right:none;border-bottom:1px solid var(--border)}
+  .photo-zones-grid{grid-template-columns:1fr}.photo-zone{min-height:80px}
+  .routine-cols,.steps-grid{grid-template-columns:1fr}
+  .shop-section{padding:60px 24px}
+  footer{padding:32px 24px;flex-direction:column;text-align:center}
+  .modal{padding:32px 24px}.spec-actions{flex-direction:column}.pro-plans{grid-template-columns:1fr}
+}
+</style>
 </head>
 <body>
 
-<div id="stars-display">⭐ <span id="stars-count">0</span></div>
-<button id="parent-btn">👨‍👩‍👧 Родителям</button>
-<div class="confetti-container" id="confetti-container"></div>
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-ring"></div>
+  <div class="loading-txt">Анализируем состав</div>
+</div>
 
-<!-- ===================== ГЛАВНАЯ ===================== -->
-<div id="page-home" class="page active">
-  <div class="home-hero">
-    <div class="robot-emoji">🤖</div>
-    <h1 class="home-title">АИ-Академия 2.0</h1>
-    <p class="home-subtitle">Учимся искусственному интеллекту, языкам и программированию! Выбери направление:</p>
-  </div>
-
-  <div class="age-cards">
-    <div class="age-card age-card-4" data-page="4">
-      <span class="age-number">4</span>
-      <span class="age-label">года</span>
-      <p class="age-desc">Игры, рисование и сказки!</p>
-      <ul class="age-features">
-        <li>🎤 Говори с роботом</li>
-        <li>🎨 Рисуй с эффектами</li>
-        <li>✨ Оживи рисунок</li>
-        <li>📖 Слушай сказки</li>
-      </ul>
+<!-- PAYWALL MODAL -->
+<div class="modal-overlay" id="paywallModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('paywallModal')">×</button>
+    <div class="modal-eyebrow">Лимит исчерпан</div>
+    <div class="modal-title">Поделитесь —<br><em style="font-family:'Playfair Display',serif;font-style:italic;color:var(--gold)">получите +3 анализа</em></div>
+    <div class="modal-sub">Расскажите подруге о SkinSync и продолжайте бесплатно.</div>
+    <button class="modal-submit" onclick="shareAndContinue()">Поделиться и продолжить →</button>
+    <div class="modal-divider">или</div>
+    <div style="font-size:12px;color:var(--muted);text-align:center">Используйте свой API ключ Anthropic</div>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-top:12px">
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold)">API Key</div>
+      <input type="text" id="paywallKey" placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false" style="border:1px solid var(--border);background:var(--warm);padding:10px 14px;font-family:monospace;font-size:12px;color:var(--ink);outline:none;width:100%">
+      <div style="font-size:10px;color:var(--muted)">Бесплатно: <a href="https://console.anthropic.com/settings/keys" target="_blank" style="color:var(--gold)">console.anthropic.com →</a></div>
     </div>
-
-    <div class="age-card age-card-7" data-page="7">
-      <span class="age-number">7</span>
-      <span class="age-label">лет</span>
-      <p class="age-desc">Программируй и создавай ИИ!</p>
-      <ul class="age-features">
-        <li>🎮 Создай свою игру</li>
-        <li>🤖 Построй чат-бота</li>
-        <li>✨ Придумай промпты</li>
-        <li>🚀 Полноценные игры</li>
-      </ul>
-    </div>
-
-    <div class="age-card age-card-lang" data-page="lang">
-      <span class="age-number">🌍</span>
-      <span class="age-label">Языки</span>
-      <p class="age-desc">Английский и китайский!</p>
-      <ul class="age-features">
-        <li>🇬🇧 Английский</li>
-        <li>🇨🇳 Китайский (中文)</li>
-        <li>🗣️ Произношение</li>
-        <li>🎯 Игры-слова</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="progress-panel" style="max-width:600px; margin-top:8px;">
-    <h3>📊 Твой прогресс</h3>
-    <div class="progress-modules" id="home-progress-list"></div>
+    <button class="modal-submit" onclick="saveKeyAndContinue()" style="margin-top:10px">Сохранить ключ →</button>
   </div>
 </div>
 
-<!-- ===================== СТРАНИЦА 4 ГОДА ===================== -->
-<div id="page-4" class="page">
-  <div class="page-header" style="width:100%; max-width:1000px;">
-    <button class="back-btn" data-back="home">← Назад</button>
-    <h2 style="background:linear-gradient(90deg,#F97316,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
-      🎈 Для маленьких исследователей
-    </h2>
+<!-- PRO MODAL -->
+<div class="modal-overlay" id="proModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('proModal')">×</button>
+    <div class="modal-eyebrow">Пополнить косметичку</div>
+    <div class="modal-title">Больше продуктов —<br><em style="font-family:'Playfair Display',serif;font-style:italic;color:var(--gold)">полный анализ</em></div>
+    <div class="modal-sub">Free: до 5 продуктов. Upgrade для всей коллекции.</div>
+    <div class="pro-plans">
+      <div class="pro-plan selected" onclick="selectPlan(this)">
+        <div class="pro-plan-price">299₽</div>
+        <div class="pro-plan-desc">в месяц · 50 продуктов</div>
+      </div>
+      <div class="pro-plan" onclick="selectPlan(this)">
+        <div class="pro-plan-price">49₽</div>
+        <div class="pro-plan-desc">разово · +1 продукт</div>
+      </div>
+    </div>
+    <button class="modal-submit" onclick="alert('Оплата скоро! Напишите нам в Telegram.');closeModal('proModal')">Оформить →</button>
   </div>
+</div>
 
-  <div class="modules-grid" style="max-width:1000px; width:100%;">
-    <!-- Голосовой помощник -->
-    <div class="card voice-module">
-      <div class="module-header">
-        <h3>🎤 Говорилка-роботилка</h3>
-        <span class="tag" style="background:rgba(124,58,237,0.3); color:var(--violet-light);">Голос</span>
-      </div>
-      <p style="color:var(--text-dim); font-size:0.9rem; margin-bottom:8px;">
-        Нажми на микрофон и скажи что-нибудь! Робот ответит тебе!
-      </p>
-      
-      <button class="mic-btn" id="mic-btn" title="Говори сюда!">🎤</button>
-      <p id="mic-status" style="font-size:0.85rem; color:var(--text-dim);">Нажми, чтобы говорить</p>
-      
-      <div class="voice-output" id="voice-output">
-        👋 Привет! Я робот Бипик! Нажми на микрофон и поговори со мной!
-      </div>
+<!-- SPECIALIST MODAL -->
+<div class="modal-overlay" id="specModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('specModal')">×</button>
+    <div class="modal-eyebrow">Консультация</div>
+    <div class="modal-title">Запись к<br><em style="font-family:'Playfair Display',serif;font-style:italic;color:var(--gold)">косметологу</em></div>
+    <div class="modal-sub">Онлайн-консультация. Разберём уход и составим план восстановления.</div>
+    <input type="text" class="spec-input" id="specName" placeholder="Имя">
+    <input type="text" class="spec-input" id="specPhone" placeholder="Телефон или Telegram">
+    <input type="text" class="spec-input" id="specProblem" placeholder="Опишите проблему кратко">
+    <button class="modal-submit" onclick="submitSpec()">Оставить заявку · 1500₽</button>
+    <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:10px">Ответим в течение 2 часов</div>
+  </div>
+</div>
 
-      <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; justify-content:center;">
-        <button class="btn btn-violet btn-sm robot-say" data-text="Привет! Я так рад тебя слышать! 🤖">Привет!</button>
-        <button class="btn btn-orange btn-sm robot-say" data-text="Расскажи мне что-нибудь интересное! 🌟">Расскажи!</button>
-        <button class="btn btn-teal btn-sm" id="speak-random">Случайное 🎲</button>
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-brand">Skin<span>Sync</span></a>
+  <div class="nav-links">
+    <a href="#analyzerSection">Анализ</a>
+    <a href="#procedureSection">После процедур</a>
+    <a href="#howSection">Как работает</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:14px">
+    <span class="free-badge" id="navFreeBadge">3 анализа бесплатно</span>
+    <button class="nav-cta" onclick="scrollTo('analyzerSection')">Начать →</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">AI-косметолог</div>
+      <h1>Ваш уход,<br>проверен<br><em>ИИ</em></h1>
+      <div class="hero-free-note">3 анализа бесплатно — без регистрации</div>
+      <p class="hero-sub">Загрузите фото косметички — ИИ выявит конфликты ингредиентов и составит ритуал ухода.</p>
+      <div class="hero-actions">
+        <button class="btn btn-dark" onclick="scrollTo('analyzerSection')">Проверить уход</button>
+        <button class="btn btn-ghost" onclick="scrollTo('howSection')">Как работает</button>
       </div>
     </div>
-
-    <!-- Улучшенная рисовалка -->
-    <div class="card draw-module">
-      <div class="module-header">
-        <h3>🎨 Умная рисовалка</h3>
-        <span class="tag" style="background:rgba(249,115,22,0.3); color:var(--orange);">ИИ-фильтры</span>
-      </div>
-      
-      <div class="color-picker-row" id="color-picker-row"></div>
-
-      <div class="brush-size-row">
-        <span style="font-size:0.8rem; color:var(--text-dim);">Кисть:</span>
-        <div class="brush-dot active" style="width:12px;height:12px;" data-size="4"></div>
-        <div class="brush-dot" style="width:20px;height:20px;" data-size="10"></div>
-        <div class="brush-dot" style="width:28px;height:28px;" data-size="20"></div>
-        <div class="brush-dot" style="width:36px;height:36px;" data-size="35"></div>
-      </div>
-
-      <canvas id="draw-canvas" width="600" height="300" style="margin-top:12px;"></canvas>
-      
-      <div class="filter-btns">
-        <button class="btn btn-violet btn-sm filter-btn" data-filter="rainbow">🌈 Радуга</button>
-        <button class="btn btn-orange btn-sm filter-btn" data-filter="starry">⭐ Звёзды</button>
-        <button class="btn btn-teal btn-sm filter-btn" data-filter="glow">✨ Блеск</button>
-        <button class="btn btn-pink btn-sm filter-btn" data-filter="mirror">🪞 Зеркало</button>
-        <button class="btn btn-blue btn-sm filter-btn" data-filter="pixel">👾 Пиксели</button>
-      </div>
-      
-      <div style="display:flex; gap:8px; margin-top:10px; justify-content:center; flex-wrap:wrap;">
-        <button class="btn btn-sm" id="clear-canvas" style="background:rgba(255,255,255,0.1);">🗑️ Очистить</button>
-        <button class="btn btn-teal btn-sm" id="download-canvas">💾 Сохранить</button>
-        <button class="btn btn-yellow btn-sm award-star" data-module="Рисунок">⭐ Готово!</button>
-      </div>
+    <div class="hero-right">
+      <div class="hero-bg-circle"></div>
+      <div class="floating-card fc-1"><span>🧴</span> The Ordinary Retinol 0.5%</div>
+      <div class="floating-card fc-2"><span>✨</span> Niacinamide 10%</div>
+      <div class="floating-card fc-3"><span>🍋</span> Vitamin C 20%</div>
+      <div class="fc-danger"><div class="fc-dot" style="background:var(--danger)"></div>Конфликт ингредиентов</div>
+      <div class="fc-ok-card"><div class="fc-dot" style="background:var(--ok)"></div>Синергия обнаружена</div>
     </div>
+  </div>
+</section>
 
-    <!-- Оживление рисунков -->
-    <div class="card animate-module">
-      <div class="module-header">
-        <h3>✨ Оживи рисунок!</h3>
-        <span class="tag" style="background:rgba(236,72,153,0.3); color:var(--pink);">AI-анимация</span>
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <div class="marquee-item">12 000+ продуктов</div><div class="marquee-item">Конфликты ингредиентов</div><div class="marquee-item">Ретинол и кислоты</div><div class="marquee-item">Витамин C и ниацинамид</div><div class="marquee-item">Утренний ритуал</div><div class="marquee-item">Вечерний ритуал</div><div class="marquee-item">После процедур</div><div class="marquee-item">98% точность</div>
+    <div class="marquee-item">12 000+ продуктов</div><div class="marquee-item">Конфликты ингредиентов</div><div class="marquee-item">Ретинол и кислоты</div><div class="marquee-item">Витамин C и ниацинамид</div><div class="marquee-item">Утренний ритуал</div><div class="marquee-item">Вечерний ритуал</div><div class="marquee-item">После процедур</div><div class="marquee-item">98% точность</div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stats-grid">
+    <div class="stat-item"><div class="stat-num">12K+</div><div class="stat-lbl">Продуктов в базе</div></div>
+    <div class="stat-item"><div class="stat-num">98%</div><div class="stat-lbl">Точность анализа</div></div>
+    <div class="stat-item"><div class="stat-num">340+</div><div class="stat-lbl">Известных конфликтов</div></div>
+    <div class="stat-item"><div class="stat-num">50K</div><div class="stat-lbl">Пользователей</div></div>
+  </div>
+</div>
+
+<!-- ANALYZER -->
+<section id="analyzerSection">
+<div class="analyzer-section">
+  <div class="section-eyebrow">Анализатор</div>
+  <div class="section-title">Проверьте<br><em>свою косметику</em></div>
+  <div class="analyzer-grid">
+
+    <div class="input-col">
+      <div class="col-title">Добавьте продукты</div>
+
+      <!-- API KEY -->
+      <div class="api-row">
+        <div class="api-lbl">Anthropic API Key</div>
+        <input type="text" class="api-inp" id="apiKey" placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false">
+        <div class="api-hint">Бесплатно: <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com →</a> · или используйте 3 бесплатных анализа</div>
       </div>
-      <p style="color:var(--text-dim); font-size:0.9rem; margin-bottom:8px;">
-        Нарисуй персонажа и посмотри, как он оживёт!
-      </p>
 
-      <div class="animation-preview" id="animation-preview">
-        <span id="animated-sprite" style="font-size:4rem; transition: all 0.3s;">🐱</span>
+      <!-- FREE COUNTER -->
+      <div class="free-counter" id="freeCounter">
+        <div class="free-counter-left">Бесплатных: <strong id="freeCountText">3 из 3</strong></div>
+        <div class="free-dots"><div class="free-dot" id="dot1"></div><div class="free-dot" id="dot2"></div><div class="free-dot" id="dot3"></div></div>
       </div>
 
-      <div class="animate-controls">
-        <button class="btn btn-pink btn-sm animate-btn" data-anim="dance">💃 Танец</button>
-        <button class="btn btn-violet btn-sm animate-btn" data-anim="jump">⬆️ Прыжки</button>
-        <button class="btn btn-teal btn-sm animate-btn" data-anim="walk">🚶 Ходьба</button>
-        <button class="btn btn-orange btn-sm animate-btn" data-anim="spin">🔄 Круги</button>
-        <button class="btn btn-yellow btn-sm animate-btn" data-anim="wiggle">〰️ Виляние</button>
+      <!-- MULTI-PHOTO -->
+      <div>
+        <div class="field-hint" style="margin-bottom:7px">До 3 фото — ИИ распознает продукты</div>
+        <div class="photo-zones-grid">
+          <div class="photo-zone-wrap">
+            <div class="photo-zone" id="pz0">
+              <input type="file" accept="image/*" data-idx="0">
+              <div class="pz-icon">🛁</div>
+              <div class="pz-label"><strong>Полка</strong>Основные средства</div>
+              <img style="display:none"><div class="pz-check">✓</div>
+            </div>
+            <div class="photo-zone-label">Ванная</div>
+          </div>
+          <div class="photo-zone-wrap">
+            <div class="photo-zone" id="pz1">
+              <input type="file" accept="image/*" data-idx="1">
+              <div class="pz-icon">🪞</div>
+              <div class="pz-label"><strong>Столик</strong>Текущая рутина</div>
+              <img style="display:none"><div class="pz-check">✓</div>
+            </div>
+            <div class="photo-zone-label">Туалетный столик</div>
+          </div>
+          <div class="photo-zone-wrap">
+            <div class="photo-zone" id="pz2">
+              <input type="file" accept="image/*" data-idx="2">
+              <div class="pz-icon">👜</div>
+              <div class="pz-label"><strong>Сумочка</strong>Дорожный набор</div>
+              <img style="display:none"><div class="pz-check">✓</div>
+            </div>
+            <div class="photo-zone-label">В дороге</div>
+          </div>
+        </div>
       </div>
 
-      <div style="margin-top:12px; padding:12px; background:rgba(0,0,0,0.2); border-radius:12px; font-size:0.85rem; color:var(--text-dim);">
-        💡 <strong>Совет:</strong> Нарисуй персонажа с головой, руками и ногами — так анимация будет лучше!
+      <!-- 3D SHELF (появляется после анализа) -->
+      <div class="shelf-viz" id="shelfViz">
+        <div class="shelf-title">Ваша косметичка</div>
+        <div class="shelf-scene" id="shelfScene"><div class="shelf-plank"></div></div>
       </div>
 
-      <button class="btn btn-pink award-star" data-module="Анимация" style="margin-top:12px; width:100%;">
-        ⭐ Мой персонаж ожил!
+      <div id="recognizedBox" class="recognized-box"></div>
+      <div class="or-divider">или введите вручную</div>
+
+      <div>
+        <div class="tags-field" id="tagsWrap">
+          <input type="text" id="tagInput" placeholder="Название продукта → Enter">
+        </div>
+        <div class="field-hint" style="margin-top:5px">Пример: The Ordinary Retinol, CeraVe, La Roche-Posay</div>
+      </div>
+
+      <!-- COSMETIC BAG -->
+      <div class="bag-block">
+        <div class="bag-header">
+          <div class="bag-title">🧴 Косметичка</div>
+          <div class="bag-count" id="bagCount">0 из 5 (Free)</div>
+        </div>
+        <div class="bag-progress"><div class="bag-progress-fill" id="bagFill" style="width:0%"></div></div>
+        <button class="bag-add-btn" id="bagAddBtn">+ Добавить продукт</button>
+      </div>
+
+      <button class="analyze-btn" id="analyzeBtn">
+        <div class="spinner" id="spinner"></div>
+        <span id="btnText">Запустить анализ</span>
       </button>
+      <button class="demo-link" id="demoBtn">Попробовать демо</button>
     </div>
 
-    <!-- Перетаскивание -->
-    <div class="card drag-module">
-      <div class="module-header">
-        <h3>🧩 Кто где живёт?</h3>
-        <span class="tag" style="background:rgba(13,148,136,0.3); color:var(--teal-light);">Игра</span>
-      </div>
-      <p style="color:var(--text-dim); font-size:0.9rem; margin-bottom:8px;">
-        Перетащи животных в правильные домики!
-      </p>
-
-      <div class="drag-area" id="drag-source">
-        <div class="drag-item" draggable="true" data-animal="fish" data-home="water" id="drag-fish">🐟</div>
-        <div class="drag-item" draggable="true" data-animal="bird" data-home="sky" id="drag-bird">🐦</div>
-        <div class="drag-item" draggable="true" data-animal="bear" data-home="forest" id="drag-bear">🐻</div>
-        <div class="drag-item" draggable="true" data-animal="frog" data-home="water" id="drag-frog">🐸</div>
-      </div>
-
-      <div class="drop-zones">
-        <div class="drop-zone" id="zone-water" data-zone="water">
-          🌊<span class="zone-label">Вода</span>
-        </div>
-        <div class="drop-zone" id="zone-sky" data-zone="sky">
-          ☁️<span class="zone-label">Небо</span>
-        </div>
-        <div class="drop-zone" id="zone-forest" data-zone="forest">
-          🌲<span class="zone-label">Лес</span>
-        </div>
-      </div>
-
-      <div id="drag-feedback" style="text-align:center; margin-top:12px; font-size:1rem; min-height:24px;"></div>
-      <button class="btn btn-orange btn-sm" id="reset-drag" style="margin-top:8px; width:100%;">🔄 Заново</button>
-    </div>
-
-    <!-- Сказки -->
-    <div class="card story-module">
-      <div class="module-header">
-        <h3>📖 Сказочный ИИ</h3>
-        <span class="tag" style="background:rgba(236,72,153,0.3); color:var(--pink);">Сказки</span>
-      </div>
-      <p style="color:var(--text-dim); font-size:0.9rem; margin-bottom:8px;">
-        Выбери героя и место — ИИ придумает сказку!
-      </p>
-
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
-        <div>
-          <label style="font-size:0.82rem; color:var(--text-dim); display:block; margin-bottom:5px; font-weight:600;">Главный герой:</label>
-          <select id="story-hero" style="width:100%;background:rgba(0,0,0,0.3);border:2px solid rgba(255,255,255,0.1);border-radius:12px;padding:10px;color:var(--text);font-family:inherit;font-size:0.9rem;">
-            <option value="dragon">🐉 Дракончик</option>
-            <option value="robot">🤖 Роботик</option>
-            <option value="unicorn">🦄 Единорог</option>
-            <option value="bunny">🐰 Зайчик</option>
-            <option value="star">⭐ Звёздочка</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-size:0.82rem; color:var(--text-dim); display:block; margin-bottom:5px; font-weight:600;">Место:</label>
-          <select id="story-place" style="width:100%;background:rgba(0,0,0,0.3);border:2px solid rgba(255,255,255,0.1);border-radius:12px;padding:10px;color:var(--text);font-family:inherit;font-size:0.9rem;">
-            <option value="forest">🌲 Волшебный лес</option>
-            <option value="space">🚀 Космос</option>
-            <option value="ocean">🌊 Подводный мир</option>
-            <option value="castle">🏰 Замок</option>
-            <option value="cloud">☁️ Облачный город</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="story-output" id="story-output">
-        Нажми кнопку и я расскажу тебе сказку! ✨
-      </div>
-
-      <div class="story-controls">
-        <button class="btn btn-pink" id="generate-story" style="flex:1; min-width:130px;">✨ Новая сказка!</button>
-        <button class="btn btn-teal btn-sm" id="read-story" title="Послушать сказку">🔊 Читать</button>
-        <button class="btn btn-sm" id="download-story" style="background:rgba(255,255,255,0.1);">💾</button>
+    <!-- RESULT -->
+    <div class="result-col" id="resultPanel">
+      <div class="result-empty">
+        <div class="result-empty-mark">✦</div>
+        <div style="font-size:12px;max-width:160px;line-height:1.6">Результаты появятся здесь</div>
       </div>
     </div>
+
   </div>
 </div>
+</section>
 
-<!-- ===================== СТРАНИЦА 7 ЛЕТ ===================== -->
-<div id="page-7" class="page">
-  <div class="page-header" style="width:100%; max-width:1100px;">
-    <button class="back-btn" data-back="home">← Назад</button>
-    <h2 style="background:linear-gradient(90deg,#0D9488,#7C3AED);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
-      🚀 Лаборатория юного программиста
-    </h2>
+<!-- SHOP -->
+<section class="shop-section" id="shopSection">
+  <div class="shop-inner">
+    <div class="section-eyebrow">Рекомендации</div>
+    <div class="section-title">Дополните уход<br><em>до идеального</em></div>
+    <div class="shop-empty" id="shopEmpty">Запустите анализ, чтобы получить персональные рекомендации</div>
+    <div class="products-grid" id="productsGrid"></div>
+    <p style="font-size:10px;color:var(--muted);margin-top:20px">* Партнёрские ссылки отмечены «Реклама».</p>
   </div>
+</section>
 
-  <div class="modules-grid" style="max-width:1100px; width:100%;">
-    <!-- Улучшенный конструктор игр -->
-    <div class="card game-builder" style="grid-column: 1 / -1;">
-      <div class="module-header">
-        <h3>🎮 Конструктор игр PRO</h3>
-        <span class="tag" style="background:rgba(124,58,237,0.3);color:var(--violet-light);">Блоки</span>
-      </div>
-      <p style="color:var(--text-dim); font-size:0.88rem; margin-bottom:12px;">
-        Создай полноценную игру! Перетащи блоки, настрой уровень и играй!
-      </p>
-
-      <div class="blocks-palette" id="blocks-palette">
-        <div class="code-block event" data-block="when_click">▶ Нажали</div>
-        <div class="code-block action" data-block="move_right">→ Вправо</div>
-        <div class="code-block action" data-block="move_left">← Влево</div>
-        <div class="code-block action" data-block="jump">⬆ Прыжок</div>
-        <div class="code-block action" data-block="move_up">⬆️ Вверх</div>
-        <div class="code-block action" data-block="move_down">⬇️ Вниз</div>
-        <div class="code-block control" data-block="repeat">🔁 Повторить</div>
-        <div class="code-block control" data-block="if_coin">💰 Если монета</div>
-        <div class="code-block sound" data-block="play_sound">🔊 Звук</div>
-        <div class="code-block look" data-block="change_color">🎨 Цвет</div>
-        <div class="code-block look" data-block="spin">🔄 Крутить</div>
-        <div class="code-block look" data-block="grow">📏 Расти</div>
-      </div>
-
-      <div class="code-canvas" id="code-canvas">
-        <p style="color:var(--text-dim); font-size:0.85rem; pointer-events:none;" id="canvas-placeholder">
-          Нажми на блоки сверху, чтобы добавить их в программу ↑
-        </p>
-      </div>
-
-      <!-- Игровой движок -->
-      <div class="game-canvas-container" id="game-container">
-        <div class="game-score">⭐ <span id="game-score">0</span></div>
-        <div class="game-player" id="game-player" style="left: 50px; top: 210px;">🐱</div>
-        <div class="game-coin" id="coin1" style="left: 150px; top: 150px;">🪙</div>
-        <div class="game-coin" id="coin2" style="left: 300px; top: 100px;">🪙</div>
-        <div class="game-obstacle" style="left: 200px; top: 240px; width: 60px; height: 20px; background: #8B4513;"></div>
-        <div class="game-obstacle" style="left: 400px; top: 200px; width: 40px; height: 40px; background: #666;"></div>
-      </div>
-
-      <div class="game-controls">
-        <button class="btn btn-violet btn-sm" id="run-game" style="flex:1;">▶ Запустить игру!</button>
-        <button class="btn btn-sm" id="clear-blocks" style="background:rgba(255,255,255,0.1); flex:1;">🗑 Очистить код</button>
-        <button class="btn btn-teal btn-sm" id="reset-game" style="flex:1;">🔄 Новая игра</button>
-        <button class="btn btn-yellow btn-sm" id="export-game" style="flex:1;">💾 Экспорт</button>
-      </div>
-
-      <div style="margin-top:12px; padding:12px; background:rgba(0,0,0,0.2); border-radius:12px; font-size:0.85rem; color:var(--text-dim);">
-        💡 <strong>Как играть:</strong> Собери монеты 🪙, избегая препятствий! Используй блоки движения и прыжков.
-      </div>
-    </div>
-
-    <!-- Чат-бот -->
-    <div class="card chatbot-module">
-      <div class="module-header">
-        <h3>🤖 Сделай своего бота!</h3>
-        <span class="tag" style="background:rgba(13,148,136,0.3);color:var(--teal-light);">Чат-бот</span>
-      </div>
-
-      <div class="bot-config">
-        <label>Имя бота:</label>
-        <input type="text" id="bot-name" value="Бипик" maxlength="20">
-      </div>
-      <div class="bot-config">
-        <label>Добавь ответ на вопрос:</label>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-          <input type="text" id="bot-trigger" placeholder='Если спросят "привет"...'>
-          <input type="text" id="bot-response" placeholder='Ответить "Привет! 👋"'>
-        </div>
-        <button class="btn btn-teal btn-sm" id="add-bot-rule" style="margin-top:8px;">+ Добавить правило</button>
-      </div>
-
-      <div id="bot-rules" style="font-size:0.82rem; color:var(--text-dim); margin-bottom:8px; max-height:70px; overflow-y:auto;"></div>
-
-      <div class="chat-window" id="chat-window"></div>
-
-      <div class="chat-input-row">
-        <input type="text" id="chat-input" placeholder="Напиши что-нибудь боту...">
-        <button class="btn btn-teal btn-sm" id="send-chat">📨</button>
-      </div>
-
-      <button class="btn btn-yellow btn-sm award-star" data-module="Чат-бот" style="margin-top:8px; width:100%;">
-        ⭐ Мой бот готов!
-      </button>
-    </div>
-
-    <!-- Промпты -->
-    <div class="card prompt-module">
-      <div class="module-header">
-        <h3>✨ Генератор промптов</h3>
-        <span class="tag" style="background:rgba(249,115,22,0.3);color:var(--orange);">ИИ-текст</span>
-      </div>
-      <p style="color:var(--text-dim); font-size:0.88rem; margin-bottom:12px;">
-        Промпт — это задание для ИИ! Собери свой промпт:
-      </p>
-
-      <div class="prompt-options">
-        <div class="prompt-select-group">
-          <label>Кто? (герой)</label>
-          <select id="p-who">
-            <option value="робот-исследователь">🤖 Робот-исследователь</option>
-            <option value="добрый дракон">🐉 Добрый дракон</option>
-            <option value="маленькая волшебница">🧙‍♀️ Волшебница</option>
-            <option value="космонавт-кот">🐱 Кот-космонавт</option>
-            <option value="подводная фея">🧜 Подводная фея</option>
-            <option value="говорящий медвежонок">🐻 Медвежонок</option>
-          </select>
-        </div>
-        <div class="prompt-select-group">
-          <label>Где? (место)</label>
-          <select id="p-where">
-            <option value="в радужном облаке">🌈 Радужное облако</option>
-            <option value="на далёкой планете">🪐 Далёкая планета</option>
-            <option value="в подводном дворце">🏰 Подводный дворец</option>
-            <option value="в светящемся лесу">✨ Светящийся лес</option>
-            <option value="на летающем острове">🏝 Летающий остров</option>
-            <option value="в городе будущего">🌆 Город будущего</option>
-          </select>
-        </div>
-        <div class="prompt-select-group">
-          <label>Что делает?</label>
-          <select id="p-action">
-            <option value="открывает тайную дверь">🚪 Открывает дверь</option>
-            <option value="летит к звёздам">🌟 Летит к звёздам</option>
-            <option value="делает магию">🪄 Делает магию</option>
-            <option value="ищет сокровища">💎 Ищет сокровища</option>
-            <option value="строит машину">⚙️ Строит машину</option>
-            <option value="играет в игры">🎮 Играет</option>
-          </select>
-        </div>
-        <div class="prompt-select-group">
-          <label>Стиль картинки</label>
-          <select id="p-style">
-            <option value="мультфильм Pixar">🎬 Мультик Pixar</option>
-            <option value="акварельная иллюстрация">🖌 Акварель</option>
-            <option value="детская книжная иллюстрация">📚 Книжка</option>
-            <option value="яркое аниме">🇯🇵 Аниме</option>
-            <option value="3D-рендер">💻 3D</option>
-            <option value="рисунок карандашом">✏️ Карандаш</option>
-          </select>
+<!-- AFTER PROCEDURE -->
+<section class="procedure-section" id="procedureSection">
+  <div class="proc-inner">
+    <div class="section-eyebrow">После процедур</div>
+    <div class="section-title">Восстановление<br><em>день за днём</em></div>
+    <p style="font-size:14px;color:var(--muted);max-width:500px">Выберите процедуру и день — получите точный протокол.</p>
+    <div class="proc-grid">
+      <div class="proc-left">
+        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Процедура</div>
+        <select class="proc-select" id="procSelect">
+          <option value="">— Выберите —</option>
+          <option value="rf">РФ-лифтинг</option>
+          <option value="laser">Лазерная шлифовка</option>
+          <option value="peel">Химический пилинг</option>
+          <option value="inject">Инъекции (ботокс, филлеры)</option>
+          <option value="clean">Чистка лица</option>
+        </select>
+        <div class="proc-day-label">День после процедуры</div>
+        <div class="day-selector" id="daySelector">
+          <button class="day-btn active" data-day="1">1</button><button class="day-btn" data-day="2">2</button>
+          <button class="day-btn" data-day="3">3</button><button class="day-btn" data-day="4">4</button>
+          <button class="day-btn" data-day="5">5</button><button class="day-btn" data-day="7">7</button>
+          <button class="day-btn" data-day="10">10</button><button class="day-btn" data-day="14">14</button>
+          <button class="day-btn" data-day="21">21</button><button class="day-btn" data-day="30">30</button>
         </div>
       </div>
-
-      <button class="btn btn-orange" id="generate-prompt" style="width:100%;">🎲 Создать промпт!</button>
-
-      <div class="prompt-result" id="prompt-result">
-        Нажми кнопку, чтобы придумать промпт для ИИ-картинки! ✨
-      </div>
-
-      <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <button class="btn btn-sm" id="copy-prompt" style="background:rgba(255,255,255,0.1); flex:1;">📋 Копировать</button>
-        <button class="btn btn-yellow btn-sm award-star" data-module="Промпт" style="flex:1;">⭐ Отлично!</button>
-      </div>
-    </div>
-
-    <!-- Мини-проекты -->
-    <div class="card projects-module">
-      <div class="module-header">
-        <h3>🚀 Мини-проекты</h3>
-        <span class="tag" style="background:rgba(251,191,36,0.3);color:var(--yellow);">Пошагово</span>
-      </div>
-      <p style="color:var(--text-dim); font-size:0.88rem; margin-bottom:4px;">
-        Выбери проект и следуй пошаговым инструкциям!
-      </p>
-
-      <div class="projects-grid" id="projects-grid"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ===================== СТРАНИЦА ЯЗЫКОВ ===================== -->
-<div id="page-lang" class="page">
-  <div class="page-header" style="width:100%; max-width:1000px;">
-    <button class="back-btn" data-back="home">← Назад</button>
-    <h2 style="background:linear-gradient(90deg,#3B82F6,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
-      🌍 Школа языков
-    </h2>
-  </div>
-
-  <div class="modules-grid" style="max-width:1000px; width:100%;">
-    <!-- Выбор языка -->
-    <div class="card lang-module" style="grid-column: 1 / -1;">
-      <div class="module-header">
-        <h3>📚 Выбери язык для изучения</h3>
-        <span class="tag" style="background:rgba(59,130,246,0.3); color:var(--blue);">Языки</span>
-      </div>
-
-      <div class="lang-tabs">
-        <div class="lang-tab active" data-lang="en">🇬🇧 English</div>
-        <div class="lang-tab" data-lang="zh">🇨🇳 中文</div>
-      </div>
-
-      <!-- Английский -->
-      <div class="lang-content active" id="lang-en">
-        <div class="category-tabs">
-          <div class="category-tab active" data-cat="animals">🐾 Животные</div>
-          <div class="category-tab" data-cat="colors">🎨 Цвета</div>
-          <div class="category-tab" data-cat="numbers">🔢 Числа</div>
-          <div class="category-tab" data-cat="food">🍎 Еда</div>
-        </div>
-
-        <div id="en-words-container">
-          <div class="word-card">
-            <div class="word-foreign" id="en-word">Cat</div>
-            <div class="word-transcription" id="en-transcription">/kæt/</div>
-            <div class="word-translation" id="en-translation">Кошка</div>
-            <div class="lang-controls">
-              <button class="btn btn-blue btn-sm speak-word" data-lang="en">🔊 Слушать</button>
-              <button class="btn btn-violet btn-sm next-word" data-lang="en">➡️ Следующее</button>
-              <button class="btn btn-yellow btn-sm award-star" data-module="Английский">⭐ Знаю!</button>
-            </div>
-          </div>
-        </div>
-
-        <div style="margin-top:16px; padding:16px; background:rgba(0,0,0,0.2); border-radius:12px;">
-          <h4 style="margin-bottom:12px;">🎮 Игра: Переведи слово!</h4>
-          <div id="en-game" style="text-align:center;">
-            <div style="font-size:2rem; margin-bottom:12px;" id="en-game-word">Dog</div>
-            <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;" id="en-game-options">
-            </div>
-            <div id="en-game-result" style="margin-top:12px; font-weight:700;"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Китайский -->
-      <div class="lang-content" id="lang-zh">
-        <div class="category-tabs">
-          <div class="category-tab active" data-cat="animals">🐾 Животные</div>
-          <div class="category-tab" data-cat="colors">🎨 Цвета</div>
-          <div class="category-tab" data-cat="numbers">🔢 Числа</div>
-          <div class="category-tab" data-cat="food">🍎 Еда</div>
-        </div>
-
-        <div id="zh-words-container">
-          <div class="word-card">
-            <div class="word-foreign" id="zh-word" style="font-size:3rem;">猫</div>
-            <div class="word-transcription" id="zh-transcription">māo</div>
-            <div class="word-translation" id="zh-translation">Кошка</div>
-            <div class="lang-controls">
-              <button class="btn btn-red btn-sm speak-word" data-lang="zh">🔊 Слушать</button>
-              <button class="btn btn-violet btn-sm next-word" data-lang="zh">➡️ Следующее</button>
-              <button class="btn btn-yellow btn-sm award-star" data-module="Китайский">⭐ Знаю!</button>
-            </div>
-          </div>
-        </div>
-
-        <div style="margin-top:16px; padding:16px; background:rgba(0,0,0,0.2); border-radius:12px;">
-          <h4 style="margin-bottom:12px;">🎮 Игра: Угадай иероглиф!</h4>
-          <div id="zh-game" style="text-align:center;">
-            <div style="font-size:3rem; margin-bottom:12px;" id="zh-game-word">狗</div>
-            <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;" id="zh-game-options">
-            </div>
-            <div id="zh-game-result" style="margin-top:12px; font-weight:700;"></div>
-          </div>
-        </div>
+      <div class="proc-right">
+        <div id="protocolPanel"><div class="protocol-empty">Выберите процедуру и день</div></div>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- ===================== МОДАЛКИ ===================== -->
-<div class="modal-overlay" id="parent-modal">
-  <div class="modal-box">
-    <h2>👨‍👩‍👧 Режим помощи родителя</h2>
-    <div id="parent-modal-content">
-      <p><strong>Добро пожаловать в АИ-Академию 2.0!</strong></p>
-      <p><strong>🎨 Рисовалка:</strong> Использует HTML5 Canvas с улучшенной поддержкой touch-событий для мобильных устройств.</p>
-      <p><strong>✨ Анимация рисунков:</strong> CSS-анимации имитируют AI-оживление персонажей.</p>
-      <p><strong>🌍 Языки:</strong> Web Speech API для произношения английских и китайских слов.</p>
-      <p><strong>🎮 Программирование:</strong> Полноценный игровой движок с физикой, коллизиями и сбором монет.</p>
+<!-- HOW -->
+<section id="howSection">
+  <div class="how-section">
+    <div class="section-eyebrow">Как работает</div>
+    <div class="section-title">Три шага<br><em>до идеального ухода</em></div>
+    <div class="steps-grid">
+      <div class="step"><div class="step-num">01</div><div class="step-title">Загрузите или введите</div><div class="step-desc">До 3 фото косметички или введите названия — ИИ распознаёт упаковки и бренды.</div></div>
+      <div class="step"><div class="step-num">02</div><div class="step-title">ИИ анализирует</div><div class="step-desc">12 000+ продуктов в базе. Каждая комбинация на конфликты и синергии.</div></div>
+      <div class="step"><div class="step-num">03</div><div class="step-title">Получите ритуал</div><div class="step-desc">Персональный утренний и вечерний уход. При проблемах — рекомендация специалиста.</div></div>
     </div>
-    <button class="btn btn-violet modal-close" id="close-parent-modal">✓ Понятно!</button>
   </div>
-</div>
+</section>
 
-<div class="modal-overlay" id="star-modal">
-  <div class="modal-box" style="text-align:center; max-width:380px;">
-    <div style="font-size:5rem; animation:star-pop 0.6s ease; display:block;">⭐</div>
-    <h2 style="color:var(--yellow); margin:12px 0;">Ты получил звезду!</h2>
-    <p id="star-modal-text" style="color:var(--text-dim);"></p>
-    <div id="total-stars-display" style="font-size:1.5rem; font-weight:700; margin:16px 0; color:var(--star);"></div>
-    <button class="btn btn-yellow modal-close" id="close-star-modal">🎉 Ура!</button>
-  </div>
-</div>
+<footer>
+  <div><div class="footer-brand">Skin<em>Sync</em></div><div class="footer-note" style="margin-top:5px">Виртуальный ИИ-косметолог</div></div>
+  <div class="footer-note">© 2026 SkinSync</div>
+</footer>
 
-<script src="app.js"></script>
+<script>
+(function(){
+'use strict';
+var BAG_FREE=5, FREE_LIMIT=3;
+var tags=[], images=[null,null,null];
+var selectedProc='', selectedDay=1;
+var _memFree=0, _memKey='';
+
+// Safe storage
+function getKey(){try{return localStorage.getItem('ss_key')||_memKey;}catch(e){return _memKey;}}
+function setKey(k){_memKey=k;try{localStorage.setItem('ss_key',k);}catch(e){}}
+function getFree(){try{var v=localStorage.getItem('ss_free');return v?parseInt(v,10):_memFree;}catch(e){return _memFree;}}
+function setFree(n){_memFree=n;try{localStorage.setItem('ss_free',String(n));}catch(e){}}
+function canFree(){return getFree()<FREE_LIMIT;}
+
+function updateFreeUI(){
+  var left=Math.max(0,FREE_LIMIT-getFree());
+  var key=getKey();
+  var ct=document.getElementById('freeCountText'), badge=document.getElementById('navFreeBadge');
+  if(ct) ct.textContent=left+' из '+FREE_LIMIT;
+  for(var i=1;i<=3;i++){var d=document.getElementById('dot'+i);if(d)d.className='free-dot'+(i>left?' used':'');}
+  if(badge){
+    if(key){badge.textContent='Ключ сохранён ✓';badge.className='free-badge';}
+    else if(left===0){badge.textContent='Лимит исчерпан';badge.className='free-badge empty';}
+    else if(left===1){badge.textContent='1 анализ остался';badge.className='free-badge warn';}
+    else{badge.textContent=left+' анализа бесплатно';badge.className='free-badge';}
+  }
+  var fc=document.getElementById('freeCounter');
+  if(fc) fc.style.display=key?'none':'flex';
+}
+
+function updateBagUI(){
+  var n=tags.length, pct=Math.min(100,Math.round(n/BAG_FREE*100));
+  var c=document.getElementById('bagCount'), f=document.getElementById('bagFill');
+  if(c) c.textContent=n+' из '+BAG_FREE+' (Free)';
+  if(f) f.style.width=pct+'%';
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  // Restore saved key
+  var saved=getKey();
+  if(saved) document.getElementById('apiKey').value=saved;
+  updateFreeUI(); updateBagUI();
+
+  // Save key on blur
+  document.getElementById('apiKey').addEventListener('blur',function(){
+    var k=this.value.trim();
+    if(k.startsWith('sk-ant')) {setKey(k);updateFreeUI();}
+  });
+
+  // Multi-photo
+  document.querySelectorAll('.photo-zone').forEach(function(zone){
+    var inp=zone.querySelector('input[type=file]'), img=zone.querySelector('img');
+    var idx=parseInt(inp.getAttribute('data-idx'));
+    inp.setAttribute('accept','image/*');
+    inp.addEventListener('change',function(){
+      var file=this.files[0]; if(!file) return;
+      var fileType=file.type||'image/jpeg';
+      var rd=new FileReader();
+      rd.onerror=function(){alert('Не удалось загрузить фото. Попробуйте другое.');};
+      rd.onload=function(e){
+        var dataUrl=e.target.result;
+        function saveImage(url,type){
+          images[idx]={b64:url.split(',')[1],type:type};
+          img.src=url; img.style.display='block';
+          zone.querySelector('.pz-icon').style.display='none';
+          zone.querySelector('.pz-label').style.display='none';
+          zone.classList.add('has-img');
+        }
+        // iOS HEIC/HEIF — конвертируем в JPEG через canvas
+        if(fileType==='image/heic'||fileType==='image/heif'){
+          var tmpImg=new Image();
+          tmpImg.onload=function(){
+            var canvas=document.createElement('canvas');
+            canvas.width=tmpImg.naturalWidth; canvas.height=tmpImg.naturalHeight;
+            canvas.getContext('2d').drawImage(tmpImg,0,0);
+            saveImage(canvas.toDataURL('image/jpeg',0.85),'image/jpeg');
+          };
+          tmpImg.onerror=function(){saveImage(dataUrl,'image/jpeg');};
+          tmpImg.src=dataUrl;
+        } else {
+          saveImage(dataUrl,fileType);
+        }
+      };
+      rd.readAsDataURL(file);
+    });
+  });
+
+  // Tags
+  var ti=document.getElementById('tagInput'), tw=document.getElementById('tagsWrap');
+  ti.addEventListener('keydown',function(e){
+    if((e.key==='Enter'||e.key===',')&&this.value.trim()){e.preventDefault();addTag(this.value.trim().replace(/,$/,''));this.value='';}
+    if(e.key==='Backspace'&&!this.value&&tags.length) removeTag(tags.length-1);
+  });
+  tw.addEventListener('click',function(){ti.focus();});
+
+  document.getElementById('analyzeBtn').addEventListener('click',runAnalysis);
+  document.getElementById('demoBtn').addEventListener('click',function(){
+    ['The Ordinary Retinol 0.5%','The Ordinary AHA 30%','CeraVe Moisturizing Cream','Vitamin C 20%'].forEach(addTag);
+  });
+
+  document.getElementById('bagAddBtn').addEventListener('click',function(){
+    if(tags.length>=BAG_FREE) openModal('proModal');
+    else{document.getElementById('tagInput').focus();scrollTo('analyzerSection');}
+  });
+
+  // Procedure
+  document.getElementById('procSelect').addEventListener('change',function(){selectedProc=this.value;renderProtocol();});
+  document.querySelectorAll('.day-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      document.querySelectorAll('.day-btn').forEach(function(b){b.classList.remove('active');});
+      this.classList.add('active');
+      selectedDay=parseInt(this.getAttribute('data-day'));
+      renderProtocol();
+    });
+  });
+});
+
+// Tags
+function addTag(t){if(!t||tags.includes(t)) return; tags.push(t); renderTags(); updateBagUI();}
+function removeTag(i){tags.splice(i,1); renderTags(); updateBagUI();}
+window.removeTag=removeTag;
+function renderTags(){
+  var tw=document.getElementById('tagsWrap'), ti=document.getElementById('tagInput');
+  tw.querySelectorAll('.tag').forEach(function(t){t.remove();});
+  tags.forEach(function(t,i){
+    var el=document.createElement('div'); el.className='tag';
+    el.innerHTML=esc(t)+' <span class="tag-x" onclick="removeTag('+i+')">×</span>';
+    tw.insertBefore(el,ti);
+  });
+}
+
+// Modals
+function openModal(id){document.getElementById(id).classList.add('active');}
+function closeModal(id){document.getElementById(id).classList.remove('active');}
+window.openModal=openModal; window.closeModal=closeModal;
+window.selectPlan=function(el){document.querySelectorAll('.pro-plan').forEach(function(p){p.classList.remove('selected');});el.classList.add('selected');};
+
+window.shareAndContinue=function(){
+  var url='https://skin-sync-nu.vercel.app';
+  if(navigator.share) navigator.share({title:'SkinSync',text:'Проверила косметику с ИИ! ',url:url}).catch(function(){});
+  else{fallbackCopy('🌿 Проверила косметику с ИИ! '+url);}
+  setFree(Math.max(0,getFree()-3)); updateFreeUI(); closeModal('paywallModal');
+};
+
+window.saveKeyAndContinue=function(){
+  var k=document.getElementById('paywallKey').value.trim();
+  if(!k||!k.startsWith('sk-ant')){alert('Введите корректный ключ (sk-ant-...)');return;}
+  setKey(k); document.getElementById('apiKey').value=k;
+  updateFreeUI(); closeModal('paywallModal'); runAnalysis();
+};
+
+window.submitSpec=function(){
+  var n=document.getElementById('specName').value.trim();
+  var p=document.getElementById('specPhone').value.trim();
+  if(!n||!p){alert('Заполните имя и контакт');return;}
+  closeModal('specModal'); alert('Заявка принята! Свяжемся в течение 2 часов.');
+};
+
+// Scroll helper
+window.scrollTo=function(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});};
+
+// 3D Shelf
+function renderShelf(products){
+  var sc=document.getElementById('shelfScene'), viz=document.getElementById('shelfViz');
+  if(!products||!products.length){viz.classList.remove('active');return;}
+  viz.classList.add('active');
+  var plank=sc.querySelector('.shelf-plank');
+  sc.innerHTML=''; if(plank) sc.appendChild(plank);
+  var emojis=['🧴','💊','🫧','🧪','💧','🌿','✨','🍯','🧼','🫙'];
+  products.slice(0,10).forEach(function(p,i){
+    var s=p.status||'ok';
+    var jar=document.createElement('div'); jar.className='jar '+s;
+    jar.style.animationDelay=(i*0.07)+'s';
+    var label=s==='ok'?'✓ Совместим':s==='warn'?'⚠ Осторожно':'✗ Конфликт';
+    jar.innerHTML='<div class="jar-lid"></div><div class="jar-body">'+emojis[i%emojis.length]+'</div>'+
+      '<div class="jar-tooltip">'+esc(p.name)+'<br><span style="font-size:9px;opacity:.7">'+label+'</span></div>';
+    sc.appendChild(jar);
+  });
+}
+
+// JSON helpers
+function isJSON(s){try{JSON.parse(s);return true;}catch(e){return false;}}
+function fixJSON(s){
+  s=s.replace(/,\s*"[^"]*"\s*:\s*[^,\}\]]*$/,'').replace(/,\s*"[^"]*"\s*$/,'').replace(/,\s*\{[^\}]*$/,'').trimEnd().replace(/,\s*$/,'');
+  var op=(s.match(/\[/g)||[]).length-(s.match(/\]/g)||[]).length;
+  var br=(s.match(/\{/g)||[]).length-(s.match(/\}/g)||[]).length;
+  for(var i=0;i<op;i++)s+=']'; for(var i=0;i<br;i++)s+='}';
+  return s;
+}
+
+// MAIN ANALYSIS
+function runAnalysis(){
+  var hasImg=images.some(function(x){return x!==null;});
+  if(!tags.length&&!hasImg){alert('Добавьте продукты или фото');return;}
+
+  var key=document.getElementById('apiKey').value.trim()||getKey();
+  if(!key){
+    // Use free tier
+    if(!canFree()){openModal('paywallModal');return;}
+  }
+
+  var btn=document.getElementById('analyzeBtn'), sp=document.getElementById('spinner'), bt=document.getElementById('btnText');
+  btn.disabled=true; sp.style.display='block'; bt.textContent='Анализируем…';
+  document.getElementById('loadingOverlay').classList.add('active');
+
+  var promise;
+
+  if(key){
+    // Direct API with user key
+    var parts=[];
+    images.forEach(function(img){
+      if(img) parts.push({type:'image',source:{type:'base64',media_type:img.type,data:img.b64}});
+    });
+    if(tags.length||!parts.length) parts.push({type:'text',text:'Продукты'+(tags.length?': '+tags.join(', '):'')+'. Проанализируй совместимость, составь ритуал, рекомендации.'});
+    else parts.push({type:'text',text:'Распознай косметику на фото, проанализируй совместимость, составь ритуал.'});
+
+    var SYSTEM='Ты косметолог-эксперт. Отвечай ТОЛЬКО валидным JSON без markdown. Максимум: 4 конфликта, 5 шагов ритуал, 3 рекомендации, 3 совета.\nФормат: {"score":75,"scoreLabel":"Хорошо","summary":"Текст.","conflicts":[{"type":"danger","title":"Название","explanation":"Текст."}],"morningRoutine":[{"product":"Название","tip":"Текст."}],"eveningRoutine":[{"product":"Название","tip":"Текст."}],"tips":[{"emoji":"💧","text":"Текст."}],"recommendations":[{"brand":"Бренд","name":"Продукт","why":"Текст.","emoji":"🧴","price":"1500 ₽","shop":"goldapple.ru","sponsored":false}],"recognizedProducts":[]}';
+    var BODY=JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4096,system:SYSTEM,messages:[{role:'user',content:parts.length===1?parts[0].text:parts}]});
+
+    promise=new Promise(function(resolve,reject){
+      var xhr=new XMLHttpRequest();
+      xhr.open('POST','https://api.anthropic.com/v1/messages',true);
+      xhr.setRequestHeader('Content-Type','application/json');
+      xhr.setRequestHeader('x-api-key',key);
+      xhr.setRequestHeader('anthropic-version','2023-06-01');
+      xhr.setRequestHeader('anthropic-dangerous-direct-browser-access','true');
+      xhr.onload=function(){
+        try{
+          var d=JSON.parse(xhr.responseText);
+          if(xhr.status!==200){reject(new Error(d&&d.error?d.error.message:'API ошибка '+xhr.status));return;}
+          var raw=(d.content||[]).map(function(b){return b.text||'';}).join('');
+          var clean=raw.replace(/^```[a-z]*\n?/i,'').replace(/```\s*$/i,'').trim();
+          var m=clean.match(/\{[\s\S]*/);
+          if(!m){reject(new Error('JSON не найден в ответе'));return;}
+          var j=m[0].replace(/```[\s\S]*$/,'').trim();
+          if(!isJSON(j)) j=fixJSON(j);
+          resolve(JSON.parse(j));
+        }catch(e){reject(new Error('Ошибка обработки ответа: '+e.message));}
+      };
+      xhr.onerror=function(){
+        reject(new Error('Сетевая ошибка (status='+xhr.status+', readyState='+xhr.readyState+'). Safari из file:// блокирует внешние запросы — откройте файл через локальный сервер.'));
+      };
+      xhr.ontimeout=function(){reject(new Error('Превышено время ожидания.'));};
+      xhr.timeout=60000;
+      // Перехват Safari-специфичной ошибки до отправки
+      try{
+        xhr.send(BODY);
+      }catch(sendErr){
+        reject(new Error('xhr.send ошибка: '+sendErr.message+' | Браузер: '+navigator.userAgent.slice(0,80)));
+      }
+    });
+  } else {
+    // Free via backend
+    var firstImg=images.find(function(x){return x!==null;});
+    // iOS Safari fix: HEIC/HEIF не поддерживается API — используем jpeg
+    var imgType=firstImg&&firstImg.type?firstImg.type:'image/jpeg';
+    if(imgType==='image/heic'||imgType==='image/heif') imgType='image/jpeg';
+    promise=fetch('/api/analyze',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        products:tags,
+        imageBase64:firstImg?firstImg.b64:null,
+        imageType:imgType
+      })
+    }).then(function(r){
+      if(!r.ok){
+        return r.json().catch(function(){return {error:'Ошибка сервера '+r.status};}).then(function(d){
+          throw new Error(d.error||'Ошибка сервера '+r.status);
+        });
+      }
+      return r.json();
+    }).catch(function(e){
+      // Если fetch совсем упал (сеть, CORS и т.д.)
+      throw new Error(e.message||'Не удалось подключиться к серверу');
+    });
+  }
+
+  promise.then(function(result){
+    if(!key) setFree(getFree()+1);
+    updateFreeUI();
+    renderResults(result);
+    renderRecommendations(result.recommendations||[]);
+    confetti();
+  })
+  .catch(function(e){
+    document.getElementById('resultPanel').innerHTML='<div class="err-box"><strong>Ошибка:</strong> '+esc(e.message)+'</div>';
+  })
+  .then(function(){resetBtn();},function(){resetBtn();});
+
+  function resetBtn(){btn.disabled=false;sp.style.display='none';bt.textContent='Запустить анализ';document.getElementById('loadingOverlay').classList.remove('active');}
+}
+
+// Render results
+function renderResults(r){
+  var score=r.score||0;
+  var color=score>=80?'var(--ok)':score>=60?'var(--warn)':'var(--danger)';
+  var circ=2*Math.PI*50, off=circ-(score/100)*circ;
+
+  var confHtml=(r.conflicts||[]).map(function(c){
+    return '<div class="conflict-item '+(c.type||'ok')+'"><div class="c-title">'+esc(c.title)+'</div><div class="c-exp">'+esc(c.explanation)+'</div></div>';
+  }).join('')||'<p style="font-size:12px;color:var(--ok);padding:4px 0">Конфликтов не обнаружено ✓</p>';
+
+  function rHtml(items){
+    return (items||[]).map(function(item,i){
+      return '<div class="r-item"><div class="r-num">'+(i+1)+'</div><div><div class="r-prod">'+esc(item.product)+'</div><div class="r-tip">'+esc(item.tip)+'</div></div></div>';
+    }).join('')||'<div style="font-size:11px;color:var(--muted)">—</div>';
+  }
+
+  var tipsHtml=(r.tips||[]).map(function(t){
+    return '<div class="tip-item"><span style="flex-shrink:0">'+(t.emoji||'✦')+'</span><span>'+esc(t.text)+'</span></div>';
+  }).join('');
+
+  var rec=document.getElementById('recognizedBox');
+  if(r.recognizedProducts&&r.recognizedProducts.length){
+    rec.style.display='block';
+    rec.textContent='Распознано с фото: '+r.recognizedProducts.join(', ');
+    r.recognizedProducts.forEach(addTag);
+  }
+
+  // Shelf
+  var allP=tags.concat(r.recognizedProducts||[]);
+  var dNames=(r.conflicts||[]).filter(function(c){return c.type==='danger';}).map(function(c){return c.title.toLowerCase();});
+  var wNames=(r.conflicts||[]).filter(function(c){return c.type==='warn';}).map(function(c){return c.title.toLowerCase();});
+  var shelf=allP.map(function(name){
+    var n=name.toLowerCase(), s='ok';
+    dNames.forEach(function(d){if(d.indexOf(n)>-1||n.indexOf(d)>-1) s='danger';});
+    wNames.forEach(function(w){if(w.indexOf(n)>-1||n.indexOf(w)>-1) s='warn';});
+    return {name:name,status:s};
+  });
+  renderShelf(shelf);
+
+  var hasProblems=(r.conflicts||[]).some(function(c){return c.type==='danger'||c.type==='warn';});
+  var specBlock=hasProblems?'<div class="specialist-block active"><div class="spec-header"><span>🔴</span><span class="spec-title">Рекомендуем консультацию косметолога</span></div><div class="spec-sub">Найдены потенциально опасные комбинации. Специалист поможет скорректировать уход.</div><div class="spec-actions"><button class="spec-btn-primary" onclick="openModal(\'specModal\')">Записаться онлайн · 1500₽</button><button class="spec-btn-secondary" onclick="openModal(\'specModal\')">Загрузить фото кожи</button></div></div>':'';
+
+  var rp=document.getElementById('resultPanel');
+  rp.className='result-col success';
+  rp.innerHTML=
+    '<div class="score-block">'+
+      '<div class="score-ring-wrap"><svg width="110" height="110" viewBox="0 0 110 110"><circle class="ring-bg" cx="55" cy="55" r="50"/><circle class="ring-fill" id="ringFill" cx="55" cy="55" r="50" stroke="'+color+'" stroke-dasharray="'+circ+'" stroke-dashoffset="'+circ+'"/></svg>'+
+      '<div class="score-num" style="color:'+color+'">'+score+'</div></div>'+
+      '<div class="score-lbl" style="color:'+color+'">'+esc(r.scoreLabel||'')+'</div>'+
+      '<div class="score-summary">'+esc(r.summary||'')+'</div>'+
+    '</div>'+
+    specBlock+
+    '<div class="result-block"><div class="block-title">Конфликты и синергии</div><div class="conflict-list">'+confHtml+'</div></div>'+
+    '<div class="result-block"><div class="block-title">Ритуал ухода</div><div class="routine-cols"><div><div class="r-col-lbl">☀ Утро</div>'+rHtml(r.morningRoutine)+'</div><div><div class="r-col-lbl">◑ Вечер</div>'+rHtml(r.eveningRoutine)+'</div></div></div>'+
+    (tipsHtml?'<div class="result-block"><div class="block-title">Советы</div><div class="tips-list">'+tipsHtml+'</div></div>':'')+
+    '<div><div class="block-title">Поделиться</div><div class="share-row">'+
+      '<button class="share-btn" onclick="copyShare('+score+',\''+esc(r.scoreLabel||'')+'\')">Скопировать результат</button>'+
+      '<button class="share-btn" onclick="shareAppFn()">Поделиться сайтом</button>'+
+    '</div></div>';
+
+  setTimeout(function(){rp.className='result-col';},1600);
+  requestAnimationFrame(function(){
+    var ring=document.getElementById('ringFill');
+    if(ring){ring.style.transition='stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1)';ring.style.strokeDashoffset=off;}
+  });
+  rp.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function renderRecommendations(recs){
+  var pg=document.getElementById('productsGrid'), se=document.getElementById('shopEmpty');
+  pg.innerHTML='';
+  if(!recs||!recs.length){se.style.display='block';return;}
+  se.style.display='none';
+  recs.forEach(function(rec){
+    var card=document.createElement('div'); card.className='product-card';
+    var shop=(rec.shop||'').replace(/^https?:\/\//,'');
+    card.innerHTML='<div class="p-img">'+(rec.emoji||'🧴')+'</div>'+
+      (rec.sponsored?'<div class="sp-badge">Реклама</div>':'')+
+      '<div class="p-brand">'+esc(rec.brand||'')+'</div>'+
+      '<div class="p-name">'+esc(rec.name||'')+'</div>'+
+      '<div class="p-why">'+esc(rec.why||'')+'</div>'+
+      '<div class="p-footer"><div class="p-price">'+esc(rec.price||'—')+'</div>'+
+      '<button class="buy-btn" onclick="openShop(\''+shop+'\',\''+esc((rec.brand||'')+' '+(rec.name||''))+'\')">Купить</button></div>';
+    pg.appendChild(card);
+  });
+  document.getElementById('shopSection').scrollIntoView({behavior:'smooth'});
+}
+
+// PROCEDURE PROTOCOLS
+var PROTO={
+  rf:{
+    1:{can:['Пантенол, декспантенол','Холодные компрессы 10 мин','Мягкое умывание водой'],cant:['Любая косметика с активами','Солнечный свет','Горячая вода']},
+    3:{can:['Клиндовит (при воспалениях)','Пантенол','Физраствор'],cant:['Ретинол, кислоты','Скрабы, пилинги','Сауна, баня']},
+    7:{can:['Лёгкий увлажняющий крем','Нежный тоник без спирта','SPF 50+'],cant:['Ретинол, AHA-кислоты','Агрессивные пилинги','Загар']},
+    14:{can:['Гиалуроновая кислота','Антиоксиданты (витамин C)','Ежедневный SPF'],cant:['Ретинол (ещё рано)','Химические пилинги','Солярий']},
+    30:{can:['Полный обычный уход','Ретинол постепенно','Регулярный SPF'],cant:['Повторная РФ без консультации']}
+  },
+  laser:{
+    1:{can:['Термальная вода в спрее','Холодные компрессы','Пантенол'],cant:['Любая косметика','Прикосновения','Солнце']},
+    3:{can:['Пантенол, бепантен','Мягкое умывание','Мирамистин'],cant:['Декоративная косметика','Ретинол, кислоты','Горячий душ']},
+    7:{can:['Лёгкий крем','SPF 50+ каждые 2 ч','Мицеллярная вода'],cant:['Ретинол 1 месяц','Пилинги','Спортзал']},
+    14:{can:['Гиалуроновая кислота','Церамиды, ниацинамид','Ежедневный SPF'],cant:['Ретинол','Кислоты','Скрабы']},
+    30:{can:['Обычный уход','Ретинол — после OK врача','Курс антиоксидантов'],cant:['Лазер повторно без перерыва 3 мес']}
+  },
+  peel:{
+    1:{can:['Пантенол','Термальная вода','Покой'],cant:['Вся косметика','Умывание','Солнце']},
+    3:{can:['Мягкий гель для умывания','Пантенол','Физраствор'],cant:['Ретинол, AHA, BHA','Витамин C','Скраб']},
+    7:{can:['Крем с церамидами','SPF 50','Мягкий тоник без спирта'],cant:['Кислоты','Ретинол','Повторный пилинг']},
+    14:{can:['Гиалуроновая кислота','Ниацинамид','SPF каждый день'],cant:['Агрессивные кислоты','Дермабразия']},
+    30:{can:['Полный уход','Ретинол постепенно','AHA в малых концентрациях'],cant:['Глубокий пилинг раньше 3 мес']}
+  },
+  inject:{
+    1:{can:['Холодные компрессы к уколам','Мягкий уход','Покой'],cant:['Массаж лица','Сауна, горячая ванна','Алкоголь']},
+    3:{can:['Обычный мягкий уход','SPF','Лёгкий крем'],cant:['Давление на зоны инъекций','Физиопроцедуры']},
+    7:{can:['Полный обычный уход','Умеренный спорт'],cant:['Агрессивный массаж','Лазер в зоне инъекций']},
+    14:{can:['Любой уход по типу кожи'],cant:['Тепловые процедуры в зоне ботокса']},
+    30:{can:['Обычный уход','Повторная консультация при желании'],cant:[]}
+  },
+  clean:{
+    1:{can:['Хлоргексидин (при воспалениях)','Пантенол','Лёд в полотенце'],cant:['Декоративная косметика','Трогать лицо','Солнце']},
+    3:{can:['Мягкий гель для умывания','Лёгкий крем','Точечные антисептики'],cant:['Ретинол','Скраб','Жирные маски']},
+    7:{can:['Обычный уход','Тоник без спирта','SPF'],cant:['Агрессивные кислоты','Самостоятельное выдавливание']},
+    14:{can:['Полный уход по типу кожи'],cant:['Жирные кремы при угревой болезни']},
+    30:{can:['Обычный уход','Курс уходовых средств'],cant:[]}
+  }
+};
+
+function getDayKey(day){
+  var keys=[1,3,7,14,30], best=1;
+  keys.forEach(function(k){if(k<=day) best=k;});
+  return best;
+}
+
+function renderProtocol(){
+  var panel=document.getElementById('protocolPanel');
+  if(!selectedProc){panel.innerHTML='<div class="protocol-empty">Выберите процедуру и день</div>';return;}
+  var data=PROTO[selectedProc][getDayKey(selectedDay)];
+  if(!data){panel.innerHTML='<div class="protocol-empty">Нет данных</div>';return;}
+  var names={rf:'РФ-лифтинг',laser:'Лазерная шлифовка',peel:'Химический пилинг',inject:'Инъекции',clean:'Чистка лица'};
+  var html='<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:14px">'+names[selectedProc]+' · день '+selectedDay+'</div>';
+  if(data.can&&data.can.length){
+    html+='<div class="proto-phase ok">✓ Можно сегодня</div><div class="protocol-list">';
+    data.can.forEach(function(item){html+='<div class="proto-item can"><span style="flex-shrink:0">✅</span><span>'+esc(item)+'</span></div>';});
+    html+='</div>';
+  }
+  if(data.cant&&data.cant.length){
+    html+='<div class="proto-phase no">✗ Нельзя сегодня</div><div class="protocol-list">';
+    data.cant.forEach(function(item){html+='<div class="proto-item cant"><span style="flex-shrink:0">❌</span><span>'+esc(item)+'</span></div>';});
+    html+='</div>';
+  }
+  panel.innerHTML=html;
+}
+
+// Confetti
+function confetti(){
+  var colors=['#B8965A','#3A6E50','#9B3A2F','#D4AE78','#A0743A'];
+  for(var i=0;i<18;i++){
+    var d=document.createElement('div'); d.className='confetti-dot';
+    d.style.cssText='left:'+Math.random()*100+'vw;top:15vh;background:'+colors[i%5]+';animation-delay:'+Math.random()*.4+'s;animation-duration:'+(0.9+Math.random()*.5)+'s';
+    document.body.appendChild(d);
+    setTimeout(function(dot){document.body.removeChild(dot);},1600,d);
+  }
+}
+
+// Utils
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+window.openShop=function(shop,name){if(!shop)return;window.open('https://'+shop+'/search?q='+encodeURIComponent(name),'_blank');};
+
+window.copyShare=function(score,label){
+  var text='🌿 Проверила косметику на SkinSync!\n✦ Рейтинг: '+score+'/100 — '+label+'\nПроверь бесплатно: skin-sync-nu.vercel.app';
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){alert('Скопировано! 📱');}).catch(function(){fallbackCopy(text);});}
+  else fallbackCopy(text);
+};
+window.shareAppFn=function(){
+  var url='https://skin-sync-nu.vercel.app';
+  if(navigator.share) navigator.share({title:'SkinSync',text:'Проверила косметику с ИИ! ',url:url}).catch(function(){});
+  else fallbackCopy('🌿 Проверь свою косметику с ИИ: '+url);
+};
+function fallbackCopy(text){
+  var ta=document.createElement('textarea'); ta.value=text; ta.style.cssText='position:fixed;opacity:0';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try{document.execCommand('copy');alert('Скопировано!');}catch(e){alert(text);}
+  document.body.removeChild(ta);
+}
+})();
+</script>
 </body>
 </html>
